@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -35,8 +36,7 @@ import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.PassAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutoConstants;
-import frc.robot.autons.AutonomousSelector;
-import frc.robot.autons.AutonomousSelector.modes;
+import frc.robot.autons.Autos;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
 
@@ -49,11 +49,9 @@ public class RobotContainer {
     private final AmpIO amp = new AmpIOTalonFX();
     private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter,amp);
     private final Swerve swerve = new Swerve();
-    private AutonomousSelector selector;
 
     public final EventLoop m_loop = new EventLoop();//¯\_(ツ)_/¯
   public RobotContainer() {
-    configureAutonomousSelector();
   
     swerve.zeroWheels();
     swerve.zeroGyro();
@@ -67,7 +65,7 @@ public class RobotContainer {
             )
         );
     configureBindings();
-
+  
 
   }
 
@@ -108,14 +106,6 @@ public class RobotContainer {
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))
     );
     
-  }
-  public modes getAutoCommand() {
-    return selector.get();
-    
-  }
-
-  public void configureAutonomousSelector(){
-    selector = new AutonomousSelector(swerve, superstructure);
   }
 
   public Superstructure getSuperstructure(){

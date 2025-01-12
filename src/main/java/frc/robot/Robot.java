@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import java.util.Set;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -14,39 +17,34 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.autons.Autos;
-import frc.robot.autons.AutonomousSelector.modes;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
-  Command do_nothing;
+  private final Autos autos;
+  
 
-  Command preload_mid;
-  Command preload_amp;
-  Command preload_source;
-  Command four_note_mid;
-  Command four_note_source;
-  Command four_note_amp;
-  Command two_note_mid;
-  Command two_note_amp;
-  Command two_note_source;
+  private final AutoChooser autoChooser;
 
   private boolean built = false;
 
-  @Override
-  public void robotInit() {
+  public Robot() {
     SignalLogger.setPath("/media/sda1/");
     
     Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
@@ -67,6 +65,17 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
                     // be added.*/
     m_robotContainer = new RobotContainer();
+    
+    autos = new Autos(m_robotContainer.getSwerve());
+
+    autoChooser = new AutoChooser();
+    autoChooser.addCmd("test choreo path", autos::testChoreo);
+    autoChooser.addCmd("test reset pose", autos::resetOdometry);
+    autoChooser.addCmd("none", autos::none);
+    
+    SmartDashboard.putData(autoChooser);
+
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
   }
 
   @Override
@@ -80,11 +89,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if (DriverStation.getAlliance().isPresent() && !built){
-      do_nothing = new InstantCommand();
-      built = true;
+
     }
-  }
+  
 
   @Override
   public void disabledExit() {
@@ -93,37 +100,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    if(m_robotContainer.getAutoCommand() == modes.DO_NOTHING){
-      m_autonomousCommand = do_nothing;
-    }
-
-    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
-      m_autonomousCommand = preload_mid;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_AMP){
-      m_autonomousCommand = preload_amp;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_SOURCE){
-      m_autonomousCommand = preload_source;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.FOUR_NOTE_MID){
-      m_autonomousCommand = four_note_mid;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.FOUR_NOTE_AMP){
-      m_autonomousCommand = four_note_amp;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.FOUR_NOTE_SOURCE){
-      m_autonomousCommand = four_note_source;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.TWO_NOTE_MID){
-      m_autonomousCommand = two_note_mid;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.TWO_NOTE_AMP){
-      m_autonomousCommand = two_note_amp;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.TWO_NOTE_SOURCE){
-      m_autonomousCommand = two_note_source;
-    }
+   
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

@@ -2,6 +2,9 @@ package frc.robot.autons;
 
 import java.util.function.BooleanSupplier;
 
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,96 +15,37 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
 public class Autos {
+    private final Swerve s_Swerve;
+    private final AutoFactory autoFactory;
 
-    public static Command idleCommand(Swerve swerve, Superstructure superstructure){
-        return Commands.runOnce(() -> superstructure.requestIdle());
+    public Autos(Swerve s_Swerve){
+        this.s_Swerve = s_Swerve;
+        autoFactory = new AutoFactory(
+            s_Swerve::getPoseRaw,
+            s_Swerve::resetPose,
+            s_Swerve::followChoreoTraj,
+            true,
+            s_Swerve);    
+        }
+    public AutoFactory getFactory() {
+            return autoFactory;
+        }
+    
+    public Command testChoreo(){
+        final AutoRoutine routine = autoFactory.newRoutine("test");
+        final AutoTrajectory trajectory = routine.trajectory("test");
+        routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd()));
+        return routine.cmd();
     }
 
-    public static Command finishGyro(Swerve swerve, String startingPos) {
-        if (startingPos.equals("mid")){
-            return Commands.runOnce(() -> swerve. setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 180:0));
-        }
-        else if (startingPos.equals("source")) {
-            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? -120 : 120));
-        }
-        else if (startingPos.equals("amp")){
-            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 120 : -120));
-        }
-
+    public Command none(){
         return Commands.none();
     }
-    
 
-    public static Command requestMidShoot(Superstructure superstructure){
-        BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
-         };
-        return Commands.runOnce(() -> superstructure.requestAutoPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM))
-            .andThen(new WaitUntilCommand(bool));
+    public Command resetOdometry(){
+        final AutoRoutine routine = autoFactory.newRoutine("test reset");
+        final AutoTrajectory trajectory = routine.trajectory("test");
+        routine.active().whileTrue(trajectory.resetOdometry());
+        return routine.cmd();
     }
-
-    public static Command requestMidSubwooferShoot(Superstructure superstructure){
-        BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
-         };
-        return Commands.runOnce(() -> superstructure.requestAutoPreShoot(AutoConstants.subwooferVelM, AutoConstants.subwooferRatioM, AutoConstants.subwooferDegM))
-            .andThen(new WaitUntilCommand(bool));
-
-    }
-
-    public static Command requestAmpShoot(Superstructure superstructure) {
-        BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
-         };
-        return Commands.runOnce(() -> {
-            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
-            } else {
-                superstructure.requestAutoPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
-            }
-        })
-            .andThen(new WaitUntilCommand(bool));
-    }
-
-    public static Command requestSourceShoot(Superstructure superstructure) {
-        BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
-         };
-        return Commands.runOnce(() -> {
-            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
-            } else {
-                superstructure.requestAutoPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
-            }
-        })
-            .andThen(new WaitUntilCommand(bool));
-    }
-
-    public static Command requestAmpSubwooferShoot(Superstructure superstructure) {
-        BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
-         };
-        return Commands.runOnce(() -> {
-            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoPreShoot(AutoConstants.subwooferVelR, AutoConstants.subwooferRatioR, AutoConstants.subwooferDegR);
-            } else {
-                superstructure.requestAutoPreShoot(AutoConstants.subwooferVelL, AutoConstants.subwooferRatioL, AutoConstants.subwooferDegL);
-            }
-        })
-            .andThen(new WaitUntilCommand(bool));
-    }
-
-    public static Command requestSourceSubwooferShoot(Superstructure superstructure) {
-        BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
-         };
-        return Commands.runOnce(() -> {
-            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoPreShoot(AutoConstants.subwooferVelL, AutoConstants.subwooferRatioL, AutoConstants.subwooferDegL);
-            } else {
-                superstructure.requestAutoPreShoot(AutoConstants.subwooferVelR, AutoConstants.subwooferRatioR, AutoConstants.subwooferDegR);
-            }
-        })
-            .andThen(new WaitUntilCommand(bool));
-    }
-    }
+}

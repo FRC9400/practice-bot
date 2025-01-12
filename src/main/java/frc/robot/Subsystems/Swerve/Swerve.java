@@ -14,6 +14,10 @@ import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import choreo.Choreo;
+import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -93,7 +97,7 @@ public class Swerve extends SubsystemBase{
              null, 
              this)
         );
-    
+     
 
     public Swerve() {
 
@@ -143,6 +147,9 @@ public class Swerve extends SubsystemBase{
         } catch (Exception e) {
         e.printStackTrace();
             }
+
+        
+
       }
 
 
@@ -361,6 +368,14 @@ public class Swerve extends SubsystemBase{
         Logger.recordOutput(key, dataArray.stream().mapToDouble(Double::doubleValue).toArray());
     }
 
+    public void followChoreoTraj(SwerveSample sample) {
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(
+            sample.vx + AutoConstants.xController.calculate(poseRaw.getX(), sample.x),
+            sample.vy + AutoConstants.yController.calculate(poseRaw.getY(), sample.y),
+            sample.omega + AutoConstants.headingController.calculate(poseRaw.getRotation().getRadians(), sample.heading)
+        ), poseRaw.getRotation()
+        );
 
- 
+        driveRobotRelative(speeds);
+    }
 }
