@@ -71,8 +71,7 @@ public class Robot extends LoggedRobot {
                     // be added.*/
     m_robotContainer = new RobotContainer();
     selector = new AutonomousSelector(m_robotContainer.getSwerve(), autos);
-
-    // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    autos = new Autos(m_robotContainer.getSwerve());
   }
 
   @Override
@@ -87,9 +86,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
-      do_nothing = autos.none();
+      do_nothing = new InstantCommand();
       test_choreo = autos.testChoreo();
       reset_pose = autos.resetOdometry(); 
+      built = true;
     }
 
     }
