@@ -37,14 +37,14 @@ public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private final Autos autos;
+  private Autos autos;
   
 
-  private final AutoChooser autoChooser;
+  private AutoChooser autoChooser;
 
   private boolean built = false;
 
-  public Robot() {
+  public void robotInit() {
     SignalLogger.setPath("/media/sda1/");
     
     Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
@@ -75,7 +75,7 @@ public class Robot extends LoggedRobot {
     
     SmartDashboard.putData(autoChooser);
 
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
   }
 
   @Override
@@ -100,7 +100,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-   
+    m_autonomousCommand = autos.testChoreo();
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
