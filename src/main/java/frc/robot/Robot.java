@@ -30,7 +30,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.Autos;
+import frc.robot.autons.AutonomousSelector.modes;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -39,8 +41,11 @@ public class Robot extends LoggedRobot {
 
   private Autos autos;
   
+  Command do_nothing;
+  Command test_choreo;
+  Command reset_pose;
 
-  private AutoChooser autoChooser;
+  private AutonomousSelector selector;
 
   private boolean built = false;
 
@@ -65,15 +70,7 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
                     // be added.*/
     m_robotContainer = new RobotContainer();
-    
-    autos = new Autos(m_robotContainer.getSwerve());
-
-    autoChooser = new AutoChooser();
-    autoChooser.addCmd("test choreo path", autos::testChoreo);
-    autoChooser.addCmd("test reset pose", autos::resetOdometry);
-    autoChooser.addCmd("none", autos::none);
-    
-    SmartDashboard.putData(autoChooser);
+    selector = new AutonomousSelector(m_robotContainer.getSwerve(), autos);
 
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
   }
@@ -89,6 +86,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
+    if (DriverStation.getAlliance().isPresent() && !built){
+      do_nothing = autos.none();
+      test_choreo = autos.testChoreo();
+      reset_pose = autos.resetOdometry(); 
+    }
 
     }
   
@@ -100,7 +102,17 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    m_autonomousCommand = autos.testChoreo();
+    if(selector.get() == modes.DO_NOTHING){
+      m_autonomousCommand = do_nothing;
+    }
+
+    if(selector.get() == modes.RESET_POSE){
+      m_autonomousCommand = reset_pose;
+    }
+
+    if(selector.get() == modes.TEST_CHOREO){
+      m_autonomousCommand = test_choreo;
+    }
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -143,4 +155,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void testExit() {
   }
+
+
 }
