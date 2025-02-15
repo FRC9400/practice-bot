@@ -4,21 +4,33 @@
 
 package frc.robot;
 
+import java.util.Set;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.path.PathPlannerPath;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.Autos;
 import frc.robot.autons.AutonomousSelector.modes;
@@ -38,6 +50,7 @@ public class Robot extends LoggedRobot {
 
   private boolean built = false;
 
+  @Override
   public void robotInit() {
     SignalLogger.setPath("/media/sda1/");
     

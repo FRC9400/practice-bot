@@ -16,5 +16,4 @@ public interface EndEffectorIO {
 
     public default void requestVoltage(double volts, double ratio){}
 
-    public default void requestVoltage(double volts){}
 }

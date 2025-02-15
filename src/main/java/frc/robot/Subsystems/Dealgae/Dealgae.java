@@ -17,4 +17,8 @@ public class Dealgae extends SubsystemBase {
         dealgaeIO.updateInputs(inputs);
         Logger.processInputs("Dealgae", inputs);
     }
+
+    public void requestVoltage(double voltage){
+        dealgaeIO.requestVoltage(voltage);
+    }
 }

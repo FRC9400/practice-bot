@@ -1,6 +1,7 @@
 package frc.robot.Constants;
 
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
 
@@ -9,6 +10,9 @@ import frc.commons.Conversions;
 public class elevatorConstants {
     /* Inverts */
     public static final InvertedValue elevatorMotorInvert = InvertedValue.CounterClockwise_Positive;
+
+    /* Neutral Modes */
+    public static final NeutralModeValue elevatorNeutralMode = NeutralModeValue.Brake;
     
     /* Mechanical Constants */
     public static final double gearRatio = 6;

@@ -12,9 +12,8 @@ import edu.wpi.first.units.measure.Temperature;
 
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.dealgaeConstants;
-import frc.robot.Subsystems.Dealgae.DealgaeIO.DealgaeIOInputs;
 
-public class DealgaeIOTalonFX {
+public class DealgaeIOTalonFX implements DealgaeIO {
     /* Motor Objects */
     private final TalonFX motor;
     private final TalonFXConfiguration motorConfigs;

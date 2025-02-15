@@ -114,11 +114,4 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
         rightMotor.setControl(rightVoltageOutRequest.withOutput(volts * ratio));
     }
 
-    public void requestVoltage(double volts){
-        this.leftSetpointVolts = volts;
-        this.rightSetpointVolts = volts;
-        leftMotor.setControl(leftVoltageOutRequest.withOutput(volts));
-        rightMotor.setControl(rightVoltageOutRequest.withOutput(volts));
-    }
-
 }

@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -51,6 +50,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     /* Doubles */
     private double setpointMeters;
+    private double setpointVolts;
     
     public ElevatorIOTalonFX(){
         /* Motor Objects */
@@ -65,7 +65,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         rightElevatorTemp = rightMotor.getDeviceTemp();
         leftElevatorAngularVelocity = leftMotor.getRotorVelocity();
         rightElevatorAngularVelocity = rightMotor.getRotorVelocity();
-        leftElevatorPos = leftMotor.getPosition();
+        leftElevatorPos = leftMotor.getRotorPosition();
 
         /* Control Requests */
         motionMagicRequest = new MotionMagicVoltage(0).withEnableFOC(true);
@@ -73,13 +73,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
         /* Doubles */
         setpointMeters = 0;
+        setpointVolts = 0;
 
         /* Current Limit Configuration */
         motorConfigs.CurrentLimits.StatorCurrentLimit = elevatorConstants.statorCurrentLimit;
         motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         /* Motor Output Configuration */
-        motorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        motorConfigs.MotorOutput.NeutralMode = elevatorConstants.elevatorNeutralMode;
         motorConfigs.MotorOutput.Inverted = elevatorConstants.elevatorMotorInvert;
         
         /* Motion Magic Configuration */
@@ -131,6 +132,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         
         /* Refresh Inputs */
         inputs.appliedVolts = voltageOutRequest.Output;
+        inputs.appliedMeters = motionMagicRequest.Position;
+        inputs.setpointVolts = setpointVolts;
         inputs.setpointMeters = setpointMeters;
         inputs.elevatorHeightMeters = Conversions.RotationsToMeters(leftElevatorPos.getValueAsDouble(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
         inputs.velocityRPS = new double[] {leftElevatorAngularVelocity.getValueAsDouble(), rightElevatorAngularVelocity.getValueAsDouble()};
@@ -140,6 +143,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     public void requestVoltage(double volts){
+        this.setpointVolts = volts;
         leftMotor.setControl(voltageOutRequest.withOutput(volts));
     }
 

@@ -6,6 +6,8 @@ public interface ElevatorIO {
     @AutoLog
     public static class ElevatorIOInputs{
         public double appliedVolts = 0;
+        public double appliedMeters = 0;
+        public double setpointVolts = 0;
         public double setpointMeters = 0;
         public double elevatorHeightMeters = 0;
         public double[] velocityMPS = new double [] {};

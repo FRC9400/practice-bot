@@ -17,4 +17,12 @@ public class EndEffector extends SubsystemBase {
         endEffectorIO.updateInputs(inputs);
         Logger.processInputs("End Effector", inputs);
     }
+
+    public void requestVoltage(double volts, double ratio){
+        endEffectorIO.requestVoltage(volts, ratio);
+    }
+
+    public void requestVoltage(double volts){
+        endEffectorIO.requestVoltage(volts, 1);
+    }
 }

@@ -56,9 +56,22 @@ public class Elevator extends SubsystemBase {
             Commands.waitSeconds(1),
             this.runOnce(() -> SignalLogger.stop()));
     }
+
     @Override
     public void periodic(){
         elevatorIO.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
+    }
+
+    public void requestMotionMagic(double meters){
+        elevatorIO.requestMotionMagic(meters);
+    }
+
+    public void requestVoltage(double volts){
+        elevatorIO.requestVoltage(volts);
+    }
+
+    public void zeroSensor(){
+        elevatorIO.zeroSensor();
     }
 }           
