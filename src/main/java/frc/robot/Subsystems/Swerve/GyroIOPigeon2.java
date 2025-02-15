@@ -45,8 +45,7 @@ public class GyroIOPigeon2 implements GyroIO {
         inputs.rollDeg = rollDeg.getValueAsDouble();
         inputs.pitchRad = Units.degreesToRadians(pitchDeg.getValueAsDouble());
         inputs.rollRad = Units.degreesToRadians(rollDeg.getValueAsDouble());
-        //pigeon.getRawGyro(inputs.xyz_dps);
-        //inputs.changeInPitch = filter.calculate(inputs.xyz_dps[1]);
+
     }
 
 

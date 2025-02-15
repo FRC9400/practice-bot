@@ -1,32 +1,26 @@
 package frc.robot.Subsystems.Swerve;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CANcoderConfigurator;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
+
 import frc.commons.LoggedTunableNumber;
 import frc.commons.Conversions;
 import frc.robot.Constants.swerveConstants;
@@ -37,15 +31,9 @@ public class ModuleIOTalonFX implements ModuleIO {
     private final TalonFX steerMotor;
     private final CANcoder angleEncoder;
     private final double CANcoderOffset;
-    private final InvertedValue driveInvert;
-    private final InvertedValue steerInvert;
-    private final SensorDirectionValue CANcoderInvert;
     private TalonFXConfiguration driveConfigs;
     private TalonFXConfiguration steerConfigs;
     private CANcoderConfiguration angleEncoderConfigs;
-    private CANcoderConfigurator angleEncoderConfigurator;
-    private TalonFXConfigurator driveConfigurator;
-    private TalonFXConfigurator steerConfigurator;
 
     private final StatusSignal<Angle> steerPos;
     private final StatusSignal<Angle> drivePos;
@@ -62,32 +50,27 @@ public class ModuleIOTalonFX implements ModuleIO {
     private VoltageOut steerVoltageRequest;
 
     LoggedTunableNumber drivekP = new LoggedTunableNumber("Drive/kP", 0);
+    LoggedTunableNumber drivekI = new LoggedTunableNumber("Drive/kI", 0);
     LoggedTunableNumber drivekD = new LoggedTunableNumber("Drive/kD", 0);
     LoggedTunableNumber drivekS = new LoggedTunableNumber("Drive/kS", 0);
     LoggedTunableNumber drivekV = new LoggedTunableNumber("Drive/kV", 0);
+    LoggedTunableNumber drivekA = new LoggedTunableNumber("Drive/kA", 0);
 
-    LoggedTunableNumber steerkP = new LoggedTunableNumber("Steer/kP", 8);
+    LoggedTunableNumber steerkP = new LoggedTunableNumber("Steer/kP", 0);
+    LoggedTunableNumber steerkI = new LoggedTunableNumber("Steer/kI", 0);
     LoggedTunableNumber steerkD = new LoggedTunableNumber("Steer/kD", 0);
     LoggedTunableNumber steerkS = new LoggedTunableNumber("Steer/kS", 0);
     LoggedTunableNumber steerkV = new LoggedTunableNumber("Steer/kV", 0);
+    LoggedTunableNumber steerkA = new LoggedTunableNumber("Steer/kA", 0);
 
-    LoggedTunableNumber voltage = new LoggedTunableNumber("Drive/Voltage", 0);
-
-    public ModuleIOTalonFX(int driveID, int steerID, int CANcoderID, double CANcoderOffset, InvertedValue driveInvert,
-            InvertedValue steerInvert, SensorDirectionValue CANcoderInvert) {
+    public ModuleIOTalonFX(int driveID, int steerID, int CANcoderID, double CANcoderOffset, InvertedValue driveInvert, InvertedValue steerInvert, SensorDirectionValue CANcoderInvert) {
         driveMotor = new TalonFX(driveID, "canivore");
         steerMotor = new TalonFX(steerID, "canivore");
         angleEncoder = new CANcoder(CANcoderID, "canivore");
         this.CANcoderOffset = CANcoderOffset;
-        this.driveInvert = driveInvert;
-        this.steerInvert = steerInvert;
-        this.CANcoderInvert = CANcoderInvert;
         driveConfigs = new TalonFXConfiguration();
         steerConfigs = new TalonFXConfiguration();
         angleEncoderConfigs = new CANcoderConfiguration();
-        driveConfigurator = driveMotor.getConfigurator();
-        steerConfigurator = steerMotor.getConfigurator();
-        angleEncoderConfigurator = angleEncoder.getConfigurator();
 
         steerRequest = new PositionVoltage(0).withEnableFOC(true);
         velocityVoltageRequest = new VelocityVoltage(0).withEnableFOC(true);
@@ -100,8 +83,6 @@ public class ModuleIOTalonFX implements ModuleIO {
         var driveMotorOutputConfigs = driveConfigs.MotorOutput;
         driveMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
         driveMotorOutputConfigs.Inverted = driveInvert;
-        driveMotorOutputConfigs.PeakForwardDutyCycle = 1.0;
-        driveMotorOutputConfigs.PeakReverseDutyCycle = -1.0;
 
         var driveFeedbackConfigs = driveConfigs.Feedback;
         driveFeedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -115,23 +96,13 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveOpenLoopConfigs.VoltageOpenLoopRampPeriod = swerveConstants.moduleConstants.rampRate;
 
         var driveSlot0Configs = driveConfigs.Slot0;
-        /* 
-         //swan carpet
-        driveSlot0Configs.kP = 0.13995; // 0.13995
-        driveSlot0Configs.kI = 0.0;
-        driveSlot0Configs.kD = 0.0;
-        driveSlot0Configs.kS = 0.011412; //  0.011412
-        driveSlot0Configs.kV = 0.12125;// 0.12125
-        driveSlot0Configs.kA = 0.042716; // 0.042716*/
-
-        //field carpet
         
-        driveSlot0Configs.kP = 0.14922; //0.12006; // 0.13995
-        driveSlot0Configs.kI = 0.0;
-        driveSlot0Configs.kD = 0.0;
-        driveSlot0Configs.kS = 0.18123; //0.21146; //  0.011412
-        driveSlot0Configs.kV = 0.14061; //0.12209;// 0.12125
-        driveSlot0Configs.kA = 0.0096859;// 0.013607; // 0.042716*/
+        driveSlot0Configs.kP = drivekP.get();
+        driveSlot0Configs.kI = drivekI.get();
+        driveSlot0Configs.kD = drivekD.get();
+        driveSlot0Configs.kS = drivekS.get();
+        driveSlot0Configs.kV = drivekV.get();
+        driveSlot0Configs.kA = drivekA.get();
 
         // STEER
 
@@ -141,19 +112,14 @@ public class ModuleIOTalonFX implements ModuleIO {
 
         var steerFeedbackConfigs = steerConfigs.Feedback;
         steerFeedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        // steerFeedbackConfigs.FeedbackRemoteSensorID = CANcoderID;
-        // steerFeedbackConfigs.RotorToSensorRatio =
-        // swerveConstants.moduleConstants.steerGearRatio;
-        // steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
-        // steerFeedbackConfigs.FeedbackRotorOffset = 0;
 
         var steerSlot0Configs = steerConfigs.Slot0;
-        steerSlot0Configs.kP = 8.5142;
-        steerSlot0Configs.kI = 0.0;
-        steerSlot0Configs.kD = 0.069397;
-        steerSlot0Configs.kS = 0.21052;
-        steerSlot0Configs.kV = 0.1202;
-        steerSlot0Configs.kA = 0.0010619;
+        steerSlot0Configs.kP = steerkP.get();
+        steerSlot0Configs.kI = steerkI.get();
+        steerSlot0Configs.kD = steerkD.get();
+        steerSlot0Configs.kS = steerkS.get();
+        steerSlot0Configs.kV = steerkV.get();
+        steerSlot0Configs.kA = steerkA.get();
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;
@@ -166,9 +132,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         angleEncoderConfig.MagnetSensor.SensorDirection =  SensorDirectionValue.CounterClockwise_Positive;
            
 
-        driveConfigurator.apply(driveConfigs);
-        steerConfigurator.apply(steerConfigs);
-        angleEncoderConfigurator.apply(angleEncoderConfigs);
+        driveMotor.getConfigurator().apply(driveConfigs);
+        steerMotor.getConfigurator().apply(steerConfigs);
+        angleEncoder.getConfigurator().apply(angleEncoderConfigs);
 
         steerPos = steerMotor.getRotorPosition();
         drivePos = driveMotor.getRotorPosition();
@@ -227,40 +193,6 @@ public class ModuleIOTalonFX implements ModuleIO {
         inputs.turnCurrentAmps = steerAmps.getValueAsDouble();
         inputs.turnTempCelcius = steerTemp.getValueAsDouble();
     }
-
-    @Override
-    /* 
-    public void updateTunableNumbers() {
-        if (drivekD.hasChanged(drivekD.hashCode()) ||
-                drivekS.hasChanged(drivekS.hashCode()) ||
-                drivekP.hasChanged(drivekP.hashCode()) ||
-                drivekV.hasChanged(drivekV.hashCode())) {
-            var driveSlot0Configs = new Slot0Configs();
-                    driveSlot0Configs.kP = 0.13995;
-        driveSlot0Configs.kI = 0.0;
-        driveSlot0Configs.kD = 0.0;
-        driveSlot0Configs.kS = 0.011412;
-        driveSlot0Configs.kV = 0.12125;
-        driveSlot0Configs.kA = 0.042716;
-
-            driveConfigurator.apply(driveSlot0Configs);
-        }
-
-        if (steerkD.hasChanged(steerkD.hashCode()) ||
-                steerkS.hasChanged(steerkS.hashCode()) ||
-                steerkP.hasChanged(steerkP.hashCode()) ||
-                steerkV.hasChanged(steerkV.hashCode())) {
-            var steerSlot0Configs = new Slot0Configs();
-            steerSlot0Configs.kP = 11.136;
-            steerSlot0Configs.kI = 0.0;
-            steerSlot0Configs.kD = 0.13881;
-            steerSlot0Configs.kS = 0.32456;
-            steerSlot0Configs.kV = 0.12174;
-            steerSlot0Configs.kA = 0.0019929;
-
-            steerConfigurator.apply(steerSlot0Configs);
-        }
-    }*/
 
     public void setDesiredState(SwerveModuleState optimizedDesiredStates, boolean isOpenLoop) {
         if(isOpenLoop){
