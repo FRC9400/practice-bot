@@ -14,6 +14,7 @@ import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
 import frc.robot.Subsystems.EndEffector.EndEffector;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -22,10 +23,13 @@ public class RobotContainer {
     private final EndEffector endEffector = new EndEffector(new EndEffectorIOTalonFX());
     private final Dealgae dealgae = new Dealgae(new DealgaeIOTalonFX());
     private final Swerve swerve = new Swerve();
+
+    LoggedTunableNumber volts = new LoggedTunableNumber("Robot/volts", 3);
+    LoggedTunableNumber ratio = new LoggedTunableNumber("Robbot/ratio", 1);
+
   
     public RobotContainer() {
   
-    swerve.zeroWheels();
     swerve.zeroGyro();
     swerve.setDefaultCommand(
         new TeleopSwerve(
@@ -51,6 +55,11 @@ public class RobotContainer {
     driver.a()
         .onTrue(eleavtor.elevatorSysIdCmd());
         
+    driver.b()
+        .whileTrue(new RunCommand(() -> endEffector.requestVoltage(volts.get(), ratio.get())));
+
+    driver.leftBumper()
+        .whileTrue(new RunCommand(() -> endEffector.requestVoltage(0)));
     }
 
     public Swerve getSwerve(){
