@@ -9,7 +9,7 @@ import frc.commons.Conversions;
 
 public class elevatorConstants {
     /* Inverts */
-    public static final InvertedValue elevatorMotorInvert = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue elevatorMotorInvert = InvertedValue.Clockwise_Positive;
 
     /* Neutral Modes */
     public static final NeutralModeValue elevatorNeutralMode = NeutralModeValue.Brake;
@@ -20,7 +20,7 @@ public class elevatorConstants {
     
     /* Max and Min Heights */
     public static final double minHeightMeters = 0;
-    public static final double maxHeightMeters = Units.inchesToMeters(23.925); //Without plate fix
+    public static final double maxHeightMeters = Units.inchesToMeters(21); //Without plate fix
     public static final double minHeightRotations = 0;
     public static final double maxHeightRotations = Conversions.metersToRotations(maxHeightMeters, wheelCircumferenceMeters, gearRatio);
 

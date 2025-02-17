@@ -106,7 +106,7 @@ public class Swerve extends SubsystemBase{
         }
         this.fieldRelatve = true;
 
-        RobotConfig config;
+        /*RobotConfig config;
         try{
             config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
@@ -133,7 +133,7 @@ public class Swerve extends SubsystemBase{
         );
         } catch (Exception e) {
         e.printStackTrace();
-            }
+            }*/
 
         
 

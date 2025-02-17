@@ -26,11 +26,15 @@ public class LEDs extends SubsystemBase {
 
         /* CANdle Configuration */
         CANdleConfigs.stripType = LEDStripType.GRB;
-        CANdleConfigs.brightnessScalar = 0.5;
+        CANdleConfigs.brightnessScalar = 1;
         CANdle.configAllSettings(CANdleConfigs);
     }
 
     public void setColor(){
         CANdle.setLEDs(0,0,255);
+    }
+
+    public void reset(){
+        CANdle.setLEDs(0,0,0);
     }
 }

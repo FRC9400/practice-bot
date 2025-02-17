@@ -15,7 +15,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.DriverStation;

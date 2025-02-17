@@ -11,6 +11,7 @@ public interface ElevatorIO {
         public double setpointMeters = 0;
         public double elevatorHeightMeters = 0;
         public double[] velocityMPS = new double [] {};
+        public double[] voltage = new double [] {};
         public double[] velocityRPS = new double [] {};
         public double[] currentAmps = new double[] {};
         public double[] tempFahrenheit = new double[] {};    
@@ -23,5 +24,7 @@ public interface ElevatorIO {
     public default void requestMotionMagic(double meters){}
 
     public default void zeroSensor(){}
+
+    public default void coast(){}
     
 }

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Dealgae.Dealgae;
@@ -27,8 +28,7 @@ public class RobotContainer {
     private final LEDs leds = new LEDs();
 
 
-    LoggedTunableNumber volts = new LoggedTunableNumber("Robot/volts", 3);
-    LoggedTunableNumber ratio = new LoggedTunableNumber("Robbot/ratio", 1);
+    LoggedTunableNumber m3= new LoggedTunableNumber("Robot/meter", 0.05);
 
   
     public RobotContainer() {
@@ -56,10 +56,10 @@ public class RobotContainer {
         .onTrue(swerve.steerSysIdCmd());    
 
     driver.a()
-        .onTrue(eleavtor.elevatorSysIdCmd());
+        .onTrue(new RunCommand(() -> eleavtor.requestMotionMagic(m3.get())).until(() -> eleavtor.inputs.elevatorHeightMeters > m3.get() - 0.05)
+        );
         
-    driver.b()
-        .whileTrue(new RunCommand(() -> endEffector.requestVoltage(volts.get(), ratio.get())));
+    
 
     driver.leftBumper()
         .whileTrue(new RunCommand(() -> endEffector.requestVoltage(0)));
@@ -67,6 +67,8 @@ public class RobotContainer {
     driver.rightBumper()
         .onTrue(new RunCommand(() -> leds.setColor()));
 
+    driver.rightTrigger()
+        .onTrue(new RunCommand(() -> leds.reset()));
       }
 
 

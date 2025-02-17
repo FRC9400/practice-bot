@@ -16,7 +16,7 @@ import frc.robot.Constants.elevatorConstants;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIO elevatorIO;
-    private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+    public ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private final SysIdRoutine elevatorRoutine;
 
     public Elevator(ElevatorIO elevatorIO){
@@ -31,30 +31,32 @@ public class Elevator extends SubsystemBase {
 
     public Command elevatorSysIdCmd(){
         return Commands.sequence(
-            this.runOnce(() -> SignalLogger.start()),
-            elevatorRoutine
+            //this.runOnce(() -> SignalLogger.start()),
+            this.runOnce(() -> elevatorIO.requestVoltage(1)),
+            /*elevatorRoutine
                     .quasistatic(Direction.kForward)
-                    .until(() -> inputs.elevatorHeightMeters > elevatorConstants.maxHeightMeters - 0.2), //Keep in mind the max height is around 0.6
-            this.runOnce(() -> elevatorIO.requestVoltage(0)),
+                    .until(() -> inputs.elevatorHeightMeters > elevatorConstants.maxHeightMeters),*/ //Keep in mind the max height is around 0.6
+            Commands.waitSeconds(1),
+            this.runOnce(() -> elevatorIO.requestVoltage(0))/*,
             Commands.waitSeconds(1),
             elevatorRoutine
                     .quasistatic(Direction.kReverse)
-                    .until(() -> inputs.elevatorHeightMeters < 0.1), //Keep in mind the max height is around 0.6
+                    .until(() -> inputs.elevatorHeightMeters < 0.05), //Keep in mind the max height is around 0.6
             this.runOnce(() -> elevatorIO.requestVoltage(0)),
             Commands.waitSeconds(1),
 
             elevatorRoutine
                     .dynamic(Direction.kForward)
-                    .until(() -> inputs.elevatorHeightMeters > elevatorConstants.maxHeightMeters - 0.2), //Keep in mind the max height is around 0.6
+                    .until(() -> inputs.elevatorHeightMeters > elevatorConstants.maxHeightMeters), //Keep in mind the max height is around 0.6
             this.runOnce(() -> elevatorIO.requestVoltage(0)),
             Commands.waitSeconds(1),
 
             elevatorRoutine
                     .dynamic(Direction.kReverse)
-                    .until(() -> inputs.elevatorHeightMeters < 0.1), //Keep in mind the max height is around 0.6
+                    .until(() -> inputs.elevatorHeightMeters < 0.05), //Keep in mind the max height is around 0.6
             this.runOnce(() -> elevatorIO.requestVoltage(0)),
             Commands.waitSeconds(1),
-            this.runOnce(() -> SignalLogger.stop()));
+            this.runOnce(() -> SignalLogger.stop())*/);
     }
 
     @Override
@@ -73,5 +75,9 @@ public class Elevator extends SubsystemBase {
 
     public void zeroSensor(){
         elevatorIO.zeroSensor();
+    }
+
+    public void coast(){
+        elevatorIO.coast();
     }
 }           
