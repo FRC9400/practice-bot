@@ -114,12 +114,12 @@ public class ModuleIOTalonFX implements ModuleIO {
         steerFeedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
         var steerSlot0Configs = steerConfigs.Slot0;
-        steerSlot0Configs.kP = steerkP.get();
-        steerSlot0Configs.kI = steerkI.get();
-        steerSlot0Configs.kD = steerkD.get();
-        steerSlot0Configs.kS = steerkS.get();
-        steerSlot0Configs.kV = steerkV.get();
-        steerSlot0Configs.kA = steerkA.get();
+        steerSlot0Configs.kP = 3.0;
+        steerSlot0Configs.kI = 0;
+        steerSlot0Configs.kD = 0;
+        steerSlot0Configs.kS = 0.26814;
+        steerSlot0Configs.kV = 0.000966;
+        steerSlot0Configs.kA = 0;
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;

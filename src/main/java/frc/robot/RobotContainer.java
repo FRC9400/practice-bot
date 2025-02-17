@@ -32,7 +32,7 @@ public class RobotContainer {
 
   
     public RobotContainer() {
-  
+    swerve.zeroWheels();
     swerve.zeroGyro();
     swerve.setDefaultCommand(
         new TeleopSwerve(
