@@ -50,4 +50,6 @@ public interface ModuleIO {
 
     /** Updates set of tunable numbers */
     public default void updateTunableNumbers() {}
+
+    public default void driveConfig() {}
 }

@@ -65,8 +65,8 @@ public class Swerve extends SubsystemBase{
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
     private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
         null, 
-        Volts.of(3), 
-        Seconds.of(2), 
+        Volts.of(4), 
+        Seconds.of(1.5), 
         (state) -> SignalLogger.writeString("state", state.toString())), 
         new SysIdRoutine.Mechanism((
             Voltage volts) -> driveVoltage(volts.in(Volts)),
@@ -287,7 +287,7 @@ public class Swerve extends SubsystemBase{
             driveRoutine
                 .quasistatic(Direction.kReverse),
                 this.runOnce(() -> driveVoltage(0)),
-                Commands.waitSeconds(1),  
+                Commands.waitSeconds(1), 
 
             driveRoutine
                 .dynamic(Direction.kForward),
@@ -297,7 +297,7 @@ public class Swerve extends SubsystemBase{
             driveRoutine
                 .dynamic(Direction.kReverse),
                 this.runOnce(() -> driveVoltage(0)),
-                Commands.waitSeconds(1), 
+                Commands.waitSeconds(1),
             this.runOnce(() -> SignalLogger.stop())
         );
     }
