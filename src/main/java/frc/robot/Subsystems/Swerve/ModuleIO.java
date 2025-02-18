@@ -48,8 +48,4 @@ public interface ModuleIO {
     /** Resets the turn motor to its absolute position */
     public default void resetToAbsolute() {}
 
-    /** Updates set of tunable numbers */
-    public default void updateTunableNumbers() {}
-
-    public default void driveConfig() {}
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardBoolean;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -24,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
@@ -63,6 +65,11 @@ public class Swerve extends SubsystemBase{
             new Rotation2d()));
 
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
+
+    public PIDController xController;
+    public PIDController yController;
+    public PIDController headingController;
+
     private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
         null, 
         Volts.of(4), 
@@ -84,6 +91,19 @@ public class Swerve extends SubsystemBase{
              null, 
              this)
         );
+
+    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 3);
+    LoggedTunableNumber xkI = new LoggedTunableNumber("Choreo/X Controller kI", 0);
+    LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0);
+
+    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 3);
+    LoggedTunableNumber ykI = new LoggedTunableNumber("Choreo/Y Controller kI", 0);
+    LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0);
+
+    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP", 3);
+    LoggedTunableNumber thetakI = new LoggedTunableNumber("Choreo/Heading Controller kI", 0);
+    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0);
+
      
 
     public Swerve() {
@@ -106,7 +126,7 @@ public class Swerve extends SubsystemBase{
         }
         this.fieldRelatve = true;
 
-        /*RobotConfig config;
+        RobotConfig config;
         try{
             config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
@@ -133,10 +153,11 @@ public class Swerve extends SubsystemBase{
         );
         } catch (Exception e) {
         e.printStackTrace();
-            }*/
+            }
 
-        
-
+        xController = new PIDController(xkP.get(), xkI.get(), xkD.get());
+        yController = new PIDController(ykP.get(), ykI.get(), ykD.get());
+        headingController = new PIDController(thetakP.get(), thetakI.get(), thetakD.get());
       }
 
 
@@ -147,7 +168,6 @@ public class Swerve extends SubsystemBase{
         for (int i = 0; i < 4; i++){
             moduleIOs[i].updateInputs(moduleInputs[i]);
             Logger.processInputs("Swerve/Module/ModuleNum[" + i + "]", moduleInputs[i]);
-            moduleIOs[i].updateTunableNumbers();
         }
         
         updateOdometry();
@@ -357,9 +377,9 @@ public class Swerve extends SubsystemBase{
 
     public void followChoreoTraj(SwerveSample sample) {
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(
-            sample.vx + AutoConstants.xController.calculate(poseRaw.getX(), sample.x),
-            sample.vy + AutoConstants.yController.calculate(poseRaw.getY(), sample.y),
-            sample.omega + AutoConstants.headingController.calculate(poseRaw.getRotation().getRadians(), sample.heading)
+            sample.vx + xController.calculate(poseRaw.getX(), sample.x),
+            sample.vy + yController.calculate(poseRaw.getY(), sample.y),
+            sample.omega + headingController.calculate(poseRaw.getRotation().getRadians(), sample.heading)
         ), poseRaw.getRotation()
         );
         driveRobotRelative(speeds);

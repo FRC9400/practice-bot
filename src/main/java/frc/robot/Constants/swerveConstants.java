@@ -30,17 +30,6 @@ public final class swerveConstants {
 
         /* Ramp Rate */
         public static final double rampRate = 0.02;
-        
-        /* PID Values */
-        public static final double drivekP = 0.0;
-        public static final double drivekD = 0.0;
-        public static final double drivekS = 0.0;
-        public static final double drivekV = 0.0;
-
-        public static final double anglekP = 0.0;
-        public static final double anglekD = 0.0;
-        public static final double anglekS = 0.0;
-        public static final double anglekV = 0.0;
 
         /* Wheel Circumference */
         public static final double wheelCircumferenceMeters = Units.inchesToMeters(4) * Math.PI;

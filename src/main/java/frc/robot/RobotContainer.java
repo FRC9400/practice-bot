@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Dealgae.Dealgae;
@@ -16,7 +15,6 @@ import frc.robot.Subsystems.EndEffector.EndEffector;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.Swerve.Swerve;
-import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -26,10 +24,6 @@ public class RobotContainer {
     private final Dealgae dealgae = new Dealgae(new DealgaeIOTalonFX());
     private final Swerve swerve = new Swerve();
     private final LEDs leds = new LEDs();
-
-
-    LoggedTunableNumber m3= new LoggedTunableNumber("Robot/meter", 0.05);
-
   
     public RobotContainer() {
     swerve.zeroWheels();
@@ -50,20 +44,12 @@ public class RobotContainer {
     private void configureBindings() {
 
     driver.x()
-        .onTrue(swerve.driveSysIdCmd());
-
-    driver.y()
-        .onTrue(swerve.steerSysIdCmd());    
+        .onTrue(new RunCommand(() -> eleavtor.requestMotionMagic(0))); 
 
     driver.a()
-        .onTrue(new RunCommand(() -> eleavtor.requestMotionMagic(m3.get())).until(() -> eleavtor.inputs.elevatorHeightMeters > m3.get() - 0.05)
+        .onTrue(new RunCommand(() -> eleavtor.requestMotionMagic(0.5))
         );
         
-    
-
-    driver.leftBumper()
-        .whileTrue(new RunCommand(() -> endEffector.requestVoltage(0)));
-      
     driver.rightBumper()
         .onTrue(new RunCommand(() -> leds.setColor()));
 
