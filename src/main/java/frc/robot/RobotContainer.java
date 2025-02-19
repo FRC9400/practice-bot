@@ -5,13 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Subsystems.Dealgae.Dealgae;
+import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.Dealgae.DealgaeIO;
 import frc.robot.Subsystems.Dealgae.DealgaeIOTalonFX;
-import frc.robot.Subsystems.Elevator.Elevator;
+import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
-import frc.robot.Subsystems.EndEffector.EndEffector;
+import frc.robot.Subsystems.EndEffector.EndEffectorIO;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -19,11 +20,15 @@ import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
     public static final CommandXboxController driver = new CommandXboxController(0);
-    private final Elevator eleavtor = new Elevator(new ElevatorIOTalonFX());
-    private final EndEffector endEffector = new EndEffector(new EndEffectorIOTalonFX());
-    private final Dealgae dealgae = new Dealgae(new DealgaeIOTalonFX());
+    public static final CommandXboxController operator = new CommandXboxController(1);
+    
+    private final DealgaeIO s_dealgae = new DealgaeIOTalonFX();
+    private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
+    private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
+    private final LEDs s_leds = new LEDs();
+
+    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds);
     private final Swerve swerve = new Swerve();
-    private final LEDs leds = new LEDs();
   
     public RobotContainer() {
     swerve.zeroWheels();
@@ -39,29 +44,56 @@ public class RobotContainer {
     );
 
     configureBindings();
+
     }
 
     private void configureBindings() {
 
-    driver.x()
-        .onTrue(new RunCommand(() -> eleavtor.requestMotionMagic(0))); 
-
-    driver.a()
-        .onTrue(new RunCommand(() -> eleavtor.requestMotionMagic(0.5))
-        );
+        driver.leftTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.requestScore()));
         
-    driver.rightBumper()
-        .onTrue(new RunCommand(() -> leds.setColor()));
+        driver.leftBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestProcessor()));
 
-    driver.rightTrigger()
-        .onTrue(new RunCommand(() -> leds.reset()));
-      }
+        driver.rightTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
+
+        driver.x()
+            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
+
+        driver.b()
+            .onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+
+        driver.a()
+            .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
+
+        operator.rightBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
+        
+        operator.leftBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
+    
+        operator.x()
+            .onTrue(new InstantCommand(() -> superstructure.setL1()));
+        
+        operator.y()
+            .onTrue(new InstantCommand(() -> superstructure.setL2()));
+        
+        operator.a()
+            .onTrue(new InstantCommand(() -> superstructure.setL3()));
+
+        operator.b()
+            .onTrue(new InstantCommand(() -> superstructure.setL4()));
+    }
 
 
     public Swerve getSwerve(){
         return swerve;
     }
 
+    public Superstructure getSuperstructure(){
+        return superstructure;
+    }
 
 }
 

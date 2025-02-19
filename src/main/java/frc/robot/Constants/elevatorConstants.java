@@ -5,8 +5,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
 
-import frc.commons.Conversions;
-
 public class elevatorConstants {
     /* Inverts */
     public static final InvertedValue elevatorMotorInvert = InvertedValue.Clockwise_Positive;
@@ -20,10 +18,8 @@ public class elevatorConstants {
     
     /* Max and Min Heights */
     public static final double minHeightMeters = 0;
-    public static final double maxHeightMeters = Units.inchesToMeters(21); //Without plate fix
-    public static final double minHeightRotations = 0;
-    public static final double maxHeightRotations = Conversions.metersToRotations(maxHeightMeters, wheelCircumferenceMeters, gearRatio);
-
+    public static final double maxHeightMeters = Units.inchesToMeters(24);
+    
     /* Current Limits */
     public static final double statorCurrentLimit = 70;
 
@@ -31,4 +27,10 @@ public class elevatorConstants {
     public static final double CruiseVelocity = 40;
     public static final double Acceleration = 40;
     public static final double Jerk = 10000;
+
+    /* Heights in Meters */
+    public static final double L1 = 0;
+    public static final double L2 = Units.inchesToMeters(10.085665);
+    public static final double L3 = Units.inchesToMeters(12.467784);
+    public static final double L4 = Units.inchesToMeters(23.925);
 }

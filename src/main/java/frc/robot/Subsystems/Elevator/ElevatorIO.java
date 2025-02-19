@@ -23,8 +23,5 @@ public interface ElevatorIO {
 
     public default void requestMotionMagic(double meters){}
 
-    public default void zeroSensor(){}
-
-    public default void coast(){}
-    
+    public default void zeroSensor(){}    
 }

@@ -5,7 +5,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -16,7 +15,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.commons.Conversions;
-import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.elevatorConstants;
 
@@ -42,7 +40,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     /* Control Requests */
     private MotionMagicVoltage motionMagicRequest;
     private VoltageOut voltageOutRequest;
-    private NeutralOut neutralOutRequest;
 
     /* Doubles */
     private double setpointMeters;
@@ -69,7 +66,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         /* Control Requests */
         motionMagicRequest = new MotionMagicVoltage(0).withEnableFOC(true);
         voltageOutRequest = new VoltageOut(0).withEnableFOC(true);
-        neutralOutRequest = new NeutralOut();
 
         /* Doubles */
         setpointMeters = 0;
@@ -165,9 +161,5 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     public void zeroSensor(){
         leftMotor.setPosition(0);
-    }
-
-    public void coast(){
-        leftMotor.setControl(neutralOutRequest);
     }
 }

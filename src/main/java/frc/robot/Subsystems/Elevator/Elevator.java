@@ -2,37 +2,96 @@ package frc.robot.Subsystems.Elevator;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.elevatorConstants;
 
-
-public class Elevator extends SubsystemBase {
+public class Elevator {
     private final ElevatorIO elevatorIO;
-    public ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+    private ElevatorStates elevatorState = ElevatorStates.IDLE;
+    private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+    private String selectedHeight = "L1";
+    private double elevatorSetpoint = 0; 
+
+    public enum ElevatorStates{
+        IDLE,
+        SETPOINT, 
+        ZEROSENSOR
+    }
 
     public Elevator(ElevatorIO elevatorIO){
         this.elevatorIO = elevatorIO;
 
     }
 
-    @Override
-    public void periodic(){
+    public void Loop(){
         elevatorIO.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
+        Logger.recordOutput("ElevatorState", elevatorState);
+
+        switch(elevatorState){
+            case IDLE:
+                elevatorIO.requestVoltage(0);
+                break;
+            case SETPOINT:
+                elevatorIO.requestMotionMagic(elevatorSetpoint);
+                break;
+            case ZEROSENSOR:
+                elevatorIO.zeroSensor();
+                break;
+            default:
+                break;
+        }
     }
 
-    public void requestMotionMagic(double meters){
-        elevatorIO.requestMotionMagic(meters);
+    public void requestMotionMagic(){
+        if (selectedHeight == "L1"){
+            elevatorSetpoint = elevatorConstants.L1;
+        }
+        else if (selectedHeight == "L2"){
+            elevatorSetpoint = elevatorConstants.L2;
+        }
+        else if (selectedHeight == "L3"){
+            elevatorSetpoint = elevatorConstants.L3;
+        }
+        else if (selectedHeight == "L4"){
+            elevatorSetpoint = elevatorConstants.L4;
+        } else {
+            return;
+        }
+        setState(ElevatorStates.SETPOINT);
     }
 
-    public void requestVoltage(double volts){
-        elevatorIO.requestVoltage(volts);
+    public void requestHold(){
+        setState(ElevatorStates.SETPOINT);
+    }
+
+    public void requestElevatorDown(){
+        elevatorSetpoint = 0;
+        setState(ElevatorStates.SETPOINT);
+    }
+
+    public void requestIdle(){
+        setState(ElevatorStates.IDLE);
     }
 
     public void zeroSensor(){
-        elevatorIO.zeroSensor();
+        setState(ElevatorStates.ZEROSENSOR);
     }
 
-    public void coast(){
-        elevatorIO.coast();
+    public void setHeight(String height){
+        selectedHeight = height;
+        setState(ElevatorStates.IDLE);
+    }
+
+    public boolean atSetpoint(){
+        return Math.abs(inputs.elevatorHeightMeters - elevatorSetpoint) < Units.inchesToMeters(0.5);
+    }
+
+    public void setState(ElevatorStates nextState){
+        this.elevatorState = nextState;
+    }
+
+    public ElevatorStates getElevatorState(){
+        return this.elevatorState;
     }
 }           
