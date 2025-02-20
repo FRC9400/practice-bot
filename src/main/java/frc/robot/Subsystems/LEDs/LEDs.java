@@ -53,7 +53,7 @@ public class LEDs {
 
         /* CANdle Configuration */
         CANdleConfigs.stripType = LEDStripType.GRB;
-        CANdleConfigs.brightnessScalar = 1;
+        CANdleConfigs.brightnessScalar = 0.2;
         CANdle.configAllSettings(CANdleConfigs);
 
         onDuration = 0;

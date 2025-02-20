@@ -61,6 +61,7 @@ public class Superstructure extends SubsystemBase {
         s_dealgae.Loop();
         s_elevator.Loop();
         s_endeffector.Loop();
+        led.Loop();
         Logger.recordOutput("SuperstructureState", this.systemState);
         Logger.recordOutput("State start time", stateStartTime);
         switch(systemState){
@@ -78,9 +79,9 @@ public class Superstructure extends SubsystemBase {
             case INTAKE:
                 led.requestIntakingLED();
                 s_dealgae.requestIdle();
-                s_elevator.requestElevatorDown();
+                s_elevator.requestIdle();
                 s_endeffector.requestIntake(intakeVoltage.get());
-                if (s_endeffector.getEndEffectorCurrent() < intakeCurrentLimit.get() && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25){
+                if (s_endeffector.getEndEffectorCurrent() > 15 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
                 break;
@@ -125,7 +126,7 @@ public class Superstructure extends SubsystemBase {
                 s_dealgae.requestDealgae(dealgaeVoltage.get());
                 s_elevator.requestHold();
                 s_endeffector.requestIdle();
-                if (s_dealgae.getDealgaeCurrent() > dealgaeCurrent.get()){
+                if (s_dealgae.getDealgaeCurrent() > dealgaeCurrent.get() && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5){
                     setState(SuperstructureStates.ELEVATOR_DOWN);
                 }
                 break;

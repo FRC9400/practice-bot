@@ -27,6 +27,8 @@ public class Elevator {
         elevatorIO.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
         Logger.recordOutput("ElevatorState", elevatorState);
+        Logger.recordOutput("Selected Height", selectedHeight);
+        Logger.recordOutput("Elevator Setpoint", elevatorSetpoint);
 
         switch(elevatorState){
             case IDLE:
