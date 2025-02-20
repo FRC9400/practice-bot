@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.commons.LoggedTunableNumber;
 import frc.robot.Subsystems.Dealgae.Dealgae;
 import frc.robot.Subsystems.Dealgae.DealgaeIO;
 import frc.robot.Subsystems.Elevator.Elevator;
@@ -24,16 +23,6 @@ public class Superstructure extends SubsystemBase {
     private double stateStartTime = 0;
     private SuperstructureStates systemState = SuperstructureStates.IDLE;
     private String selectedHeight = "L1";
-
-    LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/End Effector Intake Voltage", 3);
-    LoggedTunableNumber intakeCurrentLimit = new LoggedTunableNumber("Superstructure/End Effector Intake Current Lower Limit", 20);
-    LoggedTunableNumber scoreVoltage = new LoggedTunableNumber("Superstructure/End Effector Score Voltage", -3);
-    LoggedTunableNumber scoreSeconds = new LoggedTunableNumber("Superstructure/End Effector Score Seconds", 2);
-    LoggedTunableNumber dealgaeVoltage = new LoggedTunableNumber("Superstructure/Dealgae Dealgae Voltage", 3);
-    LoggedTunableNumber dealgaeCurrent = new LoggedTunableNumber("Superstructure/Dealgae Dealgae Current", 25);
-    LoggedTunableNumber processorVoltage = new LoggedTunableNumber("Superstructure/Dealgae Processor Voltage", -3);
-    LoggedTunableNumber processorSeconds = new LoggedTunableNumber("Superstructure/Dealgae Processor Seconds", 2);
-
 
     public Superstructure(DealgaeIO dealgaeIO, ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, LEDs led){
         this.s_dealgae = new Dealgae(dealgaeIO);
@@ -80,7 +69,7 @@ public class Superstructure extends SubsystemBase {
                 led.requestIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
-                s_endeffector.requestIntake(intakeVoltage.get());
+                s_endeffector.requestIntake(3);
                 if (s_endeffector.getEndEffectorCurrent() > 15 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
@@ -107,8 +96,8 @@ public class Superstructure extends SubsystemBase {
                 led.requestScoringLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestHold();
-                s_endeffector.requestScore(scoreVoltage.get());
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > scoreSeconds.get()) {
+                s_endeffector.requestScore(3);
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 2) {
                     setState(SuperstructureStates.ELEVATOR_DOWN);
                 }
                 break;
@@ -123,19 +112,19 @@ public class Superstructure extends SubsystemBase {
                 break;
             case DEALGAE_B:
                 led.requestDealgaingLED();
-                s_dealgae.requestDealgae(dealgaeVoltage.get());
+                s_dealgae.requestDealgae(3);
                 s_elevator.requestHold();
                 s_endeffector.requestIdle();
-                if (s_dealgae.getDealgaeCurrent() > dealgaeCurrent.get() && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5){
+                if (s_dealgae.getDealgaeCurrent() > 27 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5){
                     setState(SuperstructureStates.ELEVATOR_DOWN);
                 }
                 break;
             case PROCESSOR:
                 led.requestProcessingLED();
-                s_dealgae.requestProcessor(processorVoltage.get());
+                s_dealgae.requestProcessor(-3);
                 s_elevator.requestElevatorDown();
                 s_endeffector.requestIdle();
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > processorSeconds.get()) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.POST_PROCESSOR);
                 }
                 break;
@@ -207,6 +196,11 @@ public class Superstructure extends SubsystemBase {
 
     public void setL3(){
         selectedHeight = "L3";
+        setState(SuperstructureStates.SET_HEIGHT);
+    }
+
+    public void setL31(){
+        selectedHeight = "L31";
         setState(SuperstructureStates.SET_HEIGHT);
     }
 

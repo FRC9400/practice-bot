@@ -55,6 +55,9 @@ public class Elevator {
         else if (selectedHeight == "L3"){
             elevatorSetpoint = elevatorConstants.L3;
         }
+        else if (selectedHeight == "L31"){
+            elevatorSetpoint = elevatorConstants.L31;
+        }
         else if (selectedHeight == "L4"){
             elevatorSetpoint = elevatorConstants.L4;
         } else {

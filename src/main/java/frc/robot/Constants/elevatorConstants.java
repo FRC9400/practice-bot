@@ -32,5 +32,6 @@ public class elevatorConstants {
     public static final double L1 = 0;
     public static final double L2 = Units.inchesToMeters(5);
     public static final double L3 = Units.inchesToMeters(12.467784);
+    public static final double L31 = Units.inchesToMeters(20);
     public static final double L4 = Units.inchesToMeters(23.925);
 }

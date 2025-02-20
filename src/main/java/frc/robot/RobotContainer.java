@@ -84,6 +84,9 @@ public class RobotContainer {
 
         operator.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
+
+        operator.rightTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.setL31()));
     }
 
 
