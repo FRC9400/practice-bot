@@ -12,8 +12,8 @@ public class Autos {
     private final Swerve s_Swerve;
     private final AutoFactory autoFactory;
 
-    public Autos(Swerve s_Swerve){
-        this.s_Swerve = s_Swerve;
+    public Autos(Swerve swerve){
+        this.s_Swerve = swerve;
         autoFactory = new AutoFactory(
             s_Swerve::getPoseRaw,
             s_Swerve::resetPose,
@@ -24,22 +24,15 @@ public class Autos {
     public AutoFactory getFactory() {
             return autoFactory;
         }
-    
-    public Command testChoreo(){
-        final AutoRoutine routine = autoFactory.newRoutine("test");
-        final AutoTrajectory trajectory = routine.trajectory("test");
+
+    public Command tune(String name){
+        final AutoRoutine routine = autoFactory.newRoutine(name);
+        final AutoTrajectory trajectory = routine.trajectory(name);
         routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd()));
         return routine.cmd();
     }
 
     public Command none(){
         return new InstantCommand();
-    }
-
-    public Command resetOdometry(){
-        final AutoRoutine routine = autoFactory.newRoutine("test reset");
-        final AutoTrajectory trajectory = routine.trajectory("test");
-        routine.active().whileTrue(trajectory.resetOdometry());
-        return routine.cmd();
     }
 }

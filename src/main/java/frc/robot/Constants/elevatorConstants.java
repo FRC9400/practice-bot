@@ -21,17 +21,17 @@ public class elevatorConstants {
     public static final double maxHeightMeters = Units.inchesToMeters(24);
     
     /* Current Limits */
-    public static final double statorCurrentLimit = 70;
+    public static final double statorCurrentLimit = 80;
 
     /* MotionMagic Values */
-    public static final double CruiseVelocity = 40;
-    public static final double Acceleration = 40;
+    public static final double CruiseVelocity = 60;
+    public static final double Acceleration = 80;
     public static final double Jerk = 10000;
 
     /* Heights in Meters */
     public static final double L1 = 0;
     public static final double L2 = Units.inchesToMeters(5);
     public static final double L3 = Units.inchesToMeters(12.467784);
-    public static final double L31 = Units.inchesToMeters(20);
+    public static final double L3Algae = Units.inchesToMeters(19.315);
     public static final double L4 = Units.inchesToMeters(23.925);
 }

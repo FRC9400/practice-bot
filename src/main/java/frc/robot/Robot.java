@@ -42,8 +42,9 @@ public class Robot extends LoggedRobot {
   private Autos autos;
   
   Command do_nothing;
-  Command test_choreo;
-  Command reset_pose;
+  Command tune_x;
+  Command tune_y;
+  Command tune_theta;
 
   private AutonomousSelector selector;
 
@@ -88,8 +89,9 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
       do_nothing = new InstantCommand();
-      test_choreo = autos.testChoreo();
-      reset_pose = autos.resetOdometry(); 
+      tune_x = autos.tune("tuneX");
+      tune_y = autos.tune("tuneY");
+      tune_theta = autos.tune("tuneTheta");
       built = true;
     }
 
@@ -107,12 +109,16 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand = do_nothing;
     }
 
-    if(selector.get() == modes.RESET_POSE){
-      m_autonomousCommand = reset_pose;
+    if(selector.get() == modes.TUNE_X){
+      m_autonomousCommand = tune_x;
     }
 
-    if(selector.get() == modes.TEST_CHOREO){
-      m_autonomousCommand = test_choreo;
+    if(selector.get() == modes.TUNE_Y){
+      m_autonomousCommand = tune_y;
+    }
+
+    if(selector.get() == modes.TUNE_THETA){
+      m_autonomousCommand = tune_theta;
     }
 
     if (m_autonomousCommand != null) {

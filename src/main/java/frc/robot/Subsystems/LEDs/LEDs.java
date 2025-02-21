@@ -28,12 +28,10 @@ public class LEDs {
         IDLE,
         INTAKING,
         INTOOK,
-        SCORING,
         DEALGAING,
-        SCORED,
-        PROCESSING,
-        PROCESSED,
-        HEIGHTSET
+        DEALGAED,
+        SCORING,
+        PROCESSING
     }
 
     public enum BlinkPattern{
@@ -65,43 +63,35 @@ public class LEDs {
         Logger.recordOutput("LEDState", LEDstate);
         switch(LEDstate){
             case DISABLED:
-                color = Color.kRed;
+                color = Color.kPink;
                 blinkPattern = BlinkPattern.SOLID;
                 break;
             case IDLE:
-                color = Color.kBeige;
-                blinkPattern = BlinkPattern.BLINK_SLOW;
+                color = Color.kWhite;
+                blinkPattern = BlinkPattern.SOLID;
                 break;
             case INTAKING:
-                color = Color.kBlue;
+                color = Color.kGreen;
                 blinkPattern = BlinkPattern.BLINK_FAST;
                 break;
             case INTOOK:
-                color = Color.kBlue;
+                color = Color.kGreen;
                 blinkPattern = BlinkPattern.SOLID;
-                break;
-            case SCORING:
-                color = Color.kDarkCyan;
-                blinkPattern = BlinkPattern.BLINK_FAST;
                 break;
             case DEALGAING:
                 color = Color.kCyan;
                 blinkPattern = BlinkPattern.BLINK_FAST;
                 break;
-            case SCORED:
-                color = Color.kCrimson;
+            case DEALGAED:
+                color = Color.kCyan;
                 blinkPattern = BlinkPattern.SOLID;
                 break;
-            case PROCESSING:
-                color = Color.kYellowGreen;
-                blinkPattern = BlinkPattern.BLINK_FAST;
-                break;
-            case PROCESSED:
+            case SCORING:
                 color = Color.kGreen;
                 blinkPattern = BlinkPattern.SOLID;
-            case HEIGHTSET:
-                color = Color.kPaleTurquoise;
-                blinkPattern = BlinkPattern.BLINK_SLOW;
+            case PROCESSING:
+                color = Color.kCyan;
+                blinkPattern = BlinkPattern.SOLID;
                 break;
         }
 
@@ -153,28 +143,20 @@ public class LEDs {
         setState(LEDStates.INTOOK);
     }
 
-    public void requestScoringLED() {
-        setState(LEDStates.SCORING);
-    }
-
     public void requestDealgaingLED() {
         setState(LEDStates.DEALGAING);
     }
 
-    public void requestScoredLED() {
-        setState(LEDStates.SCORED);
+    public void requestDealgaedLED() {
+        setState(LEDStates.DEALGAED);
     }
 
+    public void requestScoringLED() {
+        setState(LEDStates.SCORING);
+    }
+    
     public void requestProcessingLED() {
         setState(LEDStates.PROCESSING);
-    }
-
-    public void requestProcessedLED() {
-        setState(LEDStates.PROCESSED);
-    }
-
-    public void requestHeightSetLED() {
-        setState(LEDStates.HEIGHTSET);
     }
 
 }

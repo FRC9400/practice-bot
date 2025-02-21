@@ -45,7 +45,7 @@ public class Elevator {
         }
     }
 
-    public void requestMotionMagic(){
+    public void requestMotionMagicCoral(){
         if (selectedHeight == "L1"){
             elevatorSetpoint = elevatorConstants.L1;
         }
@@ -55,14 +55,20 @@ public class Elevator {
         else if (selectedHeight == "L3"){
             elevatorSetpoint = elevatorConstants.L3;
         }
-        else if (selectedHeight == "L31"){
-            elevatorSetpoint = elevatorConstants.L31;
-        }
         else if (selectedHeight == "L4"){
             elevatorSetpoint = elevatorConstants.L4;
         } else {
             return;
         }
+        setState(ElevatorStates.SETPOINT);
+    }
+
+    public void requestMotionMagicAlgae(){
+        if (selectedHeight == "L2"){
+            elevatorSetpoint = elevatorConstants.L3;
+        } else if (selectedHeight == "L3"){
+            elevatorSetpoint = elevatorConstants.L3Algae;
+        } 
         setState(ElevatorStates.SETPOINT);
     }
 
@@ -85,7 +91,6 @@ public class Elevator {
 
     public void setHeight(String height){
         selectedHeight = height;
-        setState(ElevatorStates.IDLE);
     }
 
     public boolean atSetpoint(){

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIOAdafruit;
 import frc.robot.Subsystems.Dealgae.DealgaeIO;
 import frc.robot.Subsystems.Dealgae.DealgaeIOTalonFX;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
@@ -26,8 +28,8 @@ public class RobotContainer {
     private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
     private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
     private final LEDs s_leds = new LEDs();
-
-    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds);
+    private final BeamBreakIO beamBreak = new BeamBreakIOAdafruit(1, false);
+    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, beamBreak, s_leds);
     private final Swerve swerve = new Swerve();
   
     public RobotContainer() {
@@ -49,45 +51,47 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driver.leftTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.requestScore()));
-        
-        driver.leftBumper()
-            .onTrue(new InstantCommand(() -> superstructure.requestProcessor()));
-
-        driver.rightTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
-
         driver.x()
-            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
-
-        driver.b()
-            .onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-
-        driver.a()
-            .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
-
-        operator.rightBumper()
-            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
-        
-        operator.leftBumper()
-            .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
-    
-        operator.x()
             .onTrue(new InstantCommand(() -> superstructure.setL1()));
         
-        operator.y()
+        driver.y()
             .onTrue(new InstantCommand(() -> superstructure.setL2()));
         
-        operator.a()
+        driver.a()
             .onTrue(new InstantCommand(() -> superstructure.setL3()));
 
-        operator.b()
+        driver.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
 
-        operator.rightTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.setL31()));
+        driver.start()
+            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
+        
+        driver.back()
+            .onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        
+        driver.rightBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
+        
+        driver.rightTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.requestProcessor()));
+        
+        driver.leftBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestScore()));
+        
+        driver.leftTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
+
+        operator.x()
+            .onTrue(new InstantCommand(() -> superstructure.requestIntake())); //placeholder
+
+        operator.a()
+            .onTrue(new InstantCommand(() -> superstructure.requestBeamBreakIntake())); //test
+
+        operator.b()
+            .onTrue(new InstantCommand(() -> superstructure.requestBeamBreakScore())); //test
     }
+
+
 
 
     public Swerve getSwerve(){
