@@ -163,18 +163,6 @@ public class Swerve extends SubsystemBase{
 
     @Override
     public void periodic(){
-        if(xkP.hasChanged(xkP.hashCode())||xkD.hasChanged(xkD.hashCode())){
-            xController = new PIDController(xkP.get(), xkI.get(), xkD.get());
-        }
-        
-        if(ykP.hasChanged(ykP.hashCode())||ykD.hasChanged(ykD.hashCode())){
-            yController = new PIDController(ykP.get(), ykI.get(), ykD.get());
-        }
-
-        if(thetakP.hasChanged(thetakP.hashCode())||thetakD.hasChanged(thetakP.hashCode())){
-            headingController = new PIDController(thetakP.get(), thetakI.get(), thetakD.get());
-        }
-
         gyroIO.updateInputs(gyroInputs);
         Logger.processInputs("Swerve/Gyro", gyroInputs);
         for (int i = 0; i < 4; i++){

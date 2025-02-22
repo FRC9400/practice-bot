@@ -17,7 +17,7 @@ public final class swerveConstants {
     
         
         /* Gear Ratios */
-        public static final double driveGearRatio = 5.36;
+        public static final double driveGearRatio = 6.12;
         public static final double steerGearRatio = 150.0 / 7.0;
 
         /* Max Speeds */

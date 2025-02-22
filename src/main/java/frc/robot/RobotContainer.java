@@ -31,8 +31,7 @@ public class RobotContainer {
     private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
     private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
     private final LEDs s_leds = new LEDs();
-    private final BeamBreakIO beamBreak = new BeamBreakIOAdafruit(1, false);
-    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, beamBreak, s_leds);
+    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds);
     private final Swerve swerve = new Swerve();
   
     public RobotContainer() {
@@ -54,10 +53,8 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driver.x().onTrue(new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d(4.0, 1.0), new Rotation2d(0.0)))));
-        //    .onTrue(new InstantCommand(() -> superstructure.setL1()));
-        driver.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
-        driver.x().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        driver.x()
+            .onTrue(new InstantCommand(() -> superstructure.setL1()));
 
         driver.y()
             .onTrue(new InstantCommand(() -> superstructure.setL2()));
@@ -72,7 +69,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
         
         driver.back()
-            .onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+            .onTrue(new InstantCommand(() -> swerve.zeroGyro())); //left
         
         driver.rightBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
@@ -88,12 +85,6 @@ public class RobotContainer {
 
         operator.x()
             .onTrue(new InstantCommand(() -> superstructure.requestIntake())); //placeholder
-
-        operator.a()
-            .onTrue(new InstantCommand(() -> superstructure.requestBeamBreakIntake())); //test
-
-        operator.b()
-            .onTrue(new InstantCommand(() -> superstructure.requestBeamBreakScore())); //test
     }
 
 

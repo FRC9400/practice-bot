@@ -21,8 +21,8 @@ public class Superstructure extends SubsystemBase {
     private Dealgae s_dealgae;
     private Elevator s_elevator;
     private EndEffector s_endeffector;
-    private BeamBreakIO beambreak;
-    private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
+   // private BeamBreakIO beambreak;
+   // private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
     private LEDs led;
 
     private double stateStartTime = 0;
@@ -33,11 +33,10 @@ public class Superstructure extends SubsystemBase {
     LoggedTunableNumber scoreVoltage = new LoggedTunableNumber("Superstructure/Score PRE BEAMBREAK Voltage", 1);
     LoggedTunableNumber scoreTime = new LoggedTunableNumber("Superstructure/Score PRE BEAMBREAK Time", 0.5);
 
-    public Superstructure(DealgaeIO dealgaeIO, ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, BeamBreakIO beambreakIO, LEDs led){
+    public Superstructure(DealgaeIO dealgaeIO, ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, LEDs led){
         this.s_dealgae = new Dealgae(dealgaeIO);
         this.s_elevator = new Elevator(elevatorIO);
         this.s_endeffector = new EndEffector(endEffectorIO);
-        this.beambreak = beambreakIO;
         this.led = led;
     }
 
@@ -51,12 +50,12 @@ public class Superstructure extends SubsystemBase {
         DEALGAE_B,
         DEALGAED,
         PROCESSOR,
-        ELEVATOR_DOWN,
+        ELEVATOR_DOWN/* ,
         INTAKE_A_NEW,
         INTAKE_B_NEW,
         SCORE_A_NEW,
         SCORE_B_NEW,
-        SCORE_C_NEW
+        SCORE_C_NEW*/
     }
 
     @Override
@@ -64,8 +63,8 @@ public class Superstructure extends SubsystemBase {
         s_dealgae.Loop();
         s_elevator.Loop();
         s_endeffector.Loop();
-        beambreak.updateInputs(beamBreakInputs);
-        Logger.processInputs("BeamBreak", beamBreakInputs);
+     //   beambreak.updateInputs(beamBreakInputs);
+     //   Logger.processInputs("BeamBreak", beamBreakInputs);
         led.Loop();
         Logger.recordOutput("SuperstructureState", this.systemState);
         Logger.recordOutput("State start time", stateStartTime);
@@ -99,7 +98,7 @@ public class Superstructure extends SubsystemBase {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
-            case INTAKE_A_NEW:
+          /*   case INTAKE_A_NEW:
                 led.requestIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
@@ -115,7 +114,7 @@ public class Superstructure extends SubsystemBase {
                 s_endeffector.requestIntake(intakeVoltage.get());
                 if (RobotController.getFPGATime() / 1.056 - stateStartTime > intakeTime.get()){
                     setState(SuperstructureStates.POST_INTAKE);
-                }
+                } */
             case SCORE_A:
                 led.requestScoringLED();
                 s_dealgae.requestIdle();
@@ -134,7 +133,7 @@ public class Superstructure extends SubsystemBase {
                     setState(SuperstructureStates.ELEVATOR_DOWN);
                 }
                 break;
-            case SCORE_A_NEW:
+         /*    case SCORE_A_NEW:
                 led.requestScoringLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestMotionMagicCoral();
@@ -157,7 +156,7 @@ public class Superstructure extends SubsystemBase {
                 s_endeffector.requestScore(scoreVoltage.get());
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > scoreTime.get()){
                     setState(SuperstructureStates.ELEVATOR_DOWN);
-                }
+                } */
             case DEALGAE_A:
                 led.requestDealgaingLED();
                 s_dealgae.requestIdle();
@@ -232,13 +231,13 @@ public class Superstructure extends SubsystemBase {
         setState(SuperstructureStates.ELEVATOR_DOWN);
     }
 
-    public void requestBeamBreakIntake(){
+   /* public void requestBeamBreakIntake(){
         setState(SuperstructureStates.INTAKE_A_NEW);
     }
 
     public void requestBeamBreakScore(){
         setState(SuperstructureStates.INTAKE_B_NEW);
-    }
+    } */
 
     public void setL1(){
         s_elevator.setHeight("L1");
@@ -257,7 +256,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public boolean isBeamBroken(){
-        return beamBreakInputs.beamBroken;
+        return true;//beamBreakInputs.beamBroken;
     }
 
     public void setState(SuperstructureStates nextState){
