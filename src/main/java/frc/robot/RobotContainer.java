@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Superstructure;
-import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
-import frc.robot.Subsystems.BeamBreak.BeamBreakIOAdafruit;
 import frc.robot.Subsystems.Dealgae.DealgaeIO;
 import frc.robot.Subsystems.Dealgae.DealgaeIOTalonFX;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
@@ -69,7 +67,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
         
         driver.back()
-            .onTrue(new InstantCommand(() -> swerve.zeroGyro())); //left
+            .onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
         
         driver.rightBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
@@ -84,7 +82,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
 
         operator.x()
-            .onTrue(new InstantCommand(() -> superstructure.requestIntake())); //placeholder
+            .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
     }
 
 
