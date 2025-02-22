@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -51,9 +54,11 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driver.x()
-            .onTrue(new InstantCommand(() -> superstructure.setL1()));
-        
+        driver.x().onTrue(new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d(4.0, 1.0), new Rotation2d(0.0)))));
+        //    .onTrue(new InstantCommand(() -> superstructure.setL1()));
+        driver.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
+        driver.x().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+
         driver.y()
             .onTrue(new InstantCommand(() -> superstructure.setL2()));
         
