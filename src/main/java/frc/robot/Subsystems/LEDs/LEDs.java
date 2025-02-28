@@ -63,8 +63,8 @@ public class LEDs {
         Logger.recordOutput("LEDState", LEDstate);
         switch(LEDstate){
             case DISABLED:
-                color = Color.kPink;
-                blinkPattern = BlinkPattern.SOLID;
+                color = Color.kCrimson;
+                blinkPattern = BlinkPattern.BLINK_SLOW;
                 break;
             case IDLE:
                 color = Color.kWhite;

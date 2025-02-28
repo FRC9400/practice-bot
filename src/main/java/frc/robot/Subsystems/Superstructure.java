@@ -37,6 +37,8 @@ public class Superstructure extends SubsystemBase {
         IDLE,
         INTAKE,
         POST_INTAKE,
+        INTAKE2,
+        OUTTAKE,
         SCORE_A,
         SCORE_B,
         DEALGAE_A,
@@ -51,8 +53,6 @@ public class Superstructure extends SubsystemBase {
         s_dealgae.Loop();
         s_elevator.Loop();
         s_endeffector.Loop();
-     //   beambreak.updateInputs(beamBreakInputs);
-     //   Logger.processInputs("BeamBreak", beamBreakInputs);
         led.Loop();
         Logger.recordOutput("SuperstructureState", this.systemState);
         Logger.recordOutput("State start time", stateStartTime);
@@ -73,7 +73,7 @@ public class Superstructure extends SubsystemBase {
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
                 s_endeffector.requestIntake(3);
-                if (s_endeffector.getEndEffectorCurrent() > 12 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
+                if (s_endeffector.getEndEffectorCurrent() > 11 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
                 break;
@@ -83,6 +83,24 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestIdle();
                 s_endeffector.requestIdle();
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
+                    setState(SuperstructureStates.IDLE);
+                }
+                break;
+            case INTAKE2:
+                led.requestIntakingLED();
+                s_dealgae.requestIdle();
+                s_elevator.requestIdle();
+                s_endeffector.requestIntake(3);
+                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 3){
+                    setState(SuperstructureStates.IDLE);
+                }
+                break;
+            case OUTTAKE:
+                led.requestIntakingLED();
+                s_dealgae.requestIdle();
+                s_elevator.requestIdle();
+                s_endeffector.requestIntake(-4);
+                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 4){
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -164,6 +182,14 @@ public class Superstructure extends SubsystemBase {
 
     public void requestIntake(){
         setState(SuperstructureStates.INTAKE);
+    }
+
+    public void requestIntake2(){
+        setState(SuperstructureStates.INTAKE2);
+    }
+
+    public void requestOuttake(){
+        setState(SuperstructureStates.OUTTAKE);
     }
 
     public void requestDealgae(){

@@ -84,9 +84,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         rightConfigs.MotorOutput.Inverted = elevatorConstants.elevatorMotorInvert;
         
         /* Motion Magic Configuration */
-        leftConfigs.MotionMagic.MotionMagicCruiseVelocity = 40;
-        leftConfigs.MotionMagic.MotionMagicAcceleration = 40;
-        leftConfigs.MotionMagic.MotionMagicJerk = 10000;
+        leftConfigs.MotionMagic.MotionMagicCruiseVelocity = 300;
+        leftConfigs.MotionMagic.MotionMagicAcceleration = 450;
+        leftConfigs.MotionMagic.MotionMagicJerk = 30000;
 
         /* Slot 0 Configuration */
         leftConfigs.Slot0.kP = 2;

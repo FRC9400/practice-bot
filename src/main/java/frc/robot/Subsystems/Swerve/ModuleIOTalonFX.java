@@ -83,9 +83,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveSlot0Configs.kP = 0.14;
         driveSlot0Configs.kI = 0;
         driveSlot0Configs.kD = 0;
-        driveSlot0Configs.kS = 0.115;
-        driveSlot0Configs.kV = 0.133;
-        driveSlot0Configs.kA = 1;
+        driveSlot0Configs.kS = 0.111;
+        driveSlot0Configs.kV = 0.12;
+        driveSlot0Configs.kA = 0.5;
 
         /* Steer Configs */
         var steerMotorOutputConfigs = steerConfigs.MotorOutput;

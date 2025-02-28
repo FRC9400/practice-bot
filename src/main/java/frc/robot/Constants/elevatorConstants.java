@@ -24,9 +24,9 @@ public class elevatorConstants {
     public static final double statorCurrentLimit = 80;
 
     /* MotionMagic Values */
-    public static final double CruiseVelocity = 60;
-    public static final double Acceleration = 80;
-    public static final double Jerk = 10000;
+    public static final double CruiseVelocity = 150;
+    public static final double Acceleration = 200;
+    public static final double Jerk = 20000;
 
     /* Heights in Meters */
     public static final double L1 = 0;

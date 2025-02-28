@@ -33,8 +33,8 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
   
     public RobotContainer() {
-    swerve.zeroWheels();
     swerve.zeroGyro();
+    swerve.zeroWheels();
     swerve.setDefaultCommand(
         new TeleopSwerve(
             swerve, 
@@ -50,18 +50,6 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-
-        driver.x()
-            .onTrue(new InstantCommand(() -> superstructure.setL1()));
-
-        driver.y()
-            .onTrue(new InstantCommand(() -> superstructure.setL2()));
-        
-        driver.a()
-            .onTrue(new InstantCommand(() -> superstructure.setL3()));
-
-        driver.b()
-            .onTrue(new InstantCommand(() -> superstructure.setL4()));
 
         driver.start()
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
@@ -81,8 +69,31 @@ public class RobotContainer {
         driver.leftTrigger()
             .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
 
-        operator.x()
+        operator.leftBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
+        
+        operator.leftTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.requestIntake2()));
+
+        operator.rightBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestOuttake()));
+
+        operator.rightTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
+
+        operator.x()
+            .onTrue(new InstantCommand(() -> superstructure.setL1()));
+
+        operator.y()
+            .onTrue(new InstantCommand(() -> superstructure.setL2()));
+        
+        operator.a()
+            .onTrue(new InstantCommand(() -> superstructure.setL3()));
+
+        operator.b()
+            .onTrue(new InstantCommand(() -> superstructure.setL4()));
+
+        
     }
 
 
@@ -97,4 +108,3 @@ public class RobotContainer {
     }
 
 }
-
