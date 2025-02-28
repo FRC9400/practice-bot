@@ -9,7 +9,7 @@ public class Elevator {
     private final ElevatorIO elevatorIO;
     private ElevatorStates elevatorState = ElevatorStates.IDLE;
     private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private String selectedHeight = "L1";
+    public String selectedHeight = "L1";
     private double elevatorSetpoint = 0; 
 
     public enum ElevatorStates{

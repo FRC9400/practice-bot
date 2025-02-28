@@ -31,7 +31,10 @@ public class LEDs {
         DEALGAING,
         DEALGAED,
         SCORING,
-        PROCESSING
+        PROCESSING,
+        SETL2,
+        SETL3,
+        SETL4
     }
 
     public enum BlinkPattern{
@@ -92,6 +95,18 @@ public class LEDs {
             case PROCESSING:
                 color = Color.kCyan;
                 blinkPattern = BlinkPattern.SOLID;
+                break;
+            case SETL2:
+                color = Color.kOrange;
+                blinkPattern = BlinkPattern.BLINK_SLOW;
+                break;
+            case SETL3:
+                color = Color.kOrangeRed;
+                blinkPattern = BlinkPattern.BLINK_SLOW;
+                break;
+            case SETL4:
+                color = Color.kRed;
+                blinkPattern = BlinkPattern.BLINK_SLOW;
                 break;
         }
 
@@ -159,4 +174,15 @@ public class LEDs {
         setState(LEDStates.PROCESSING);
     }
 
+    public void requestL2(){
+        setState(LEDStates.SETL2);
+    }
+
+    public void requestL3(){
+        setState(LEDStates.SETL3);
+    }
+
+    public void requestL4(){
+        setState(LEDStates.SETL4);
+    }
 }

@@ -63,7 +63,7 @@ public class Autos {
             Commands.runOnce(() -> superstructure.requestScore())
                 .alongWith(Commands.waitUntil(() -> {
                     return superstructure.getState() == SuperstructureStates.IDLE;
-                }))
+                })).raceWith(Commands.run(() -> swerve.requestDesiredState(0, 0, 0, false, false)))
         ));
         return routine.cmd();
     }

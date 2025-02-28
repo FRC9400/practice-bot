@@ -60,9 +60,16 @@ public class Superstructure extends SubsystemBase {
             case IDLE:
                 if (DriverStation.isDisabled()) {
                     led.setState(LEDStates.DISABLED);
-                }
-                else {
-                    led.setState(LEDStates.IDLE);
+                } else {
+                    if (s_elevator.selectedHeight == "L2"){
+                        led.requestL2();
+                    } if (s_elevator.selectedHeight == "L3"){
+                        led.requestL3();
+                    } if (s_elevator.selectedHeight == "L4"){
+                        led.requestL4();
+                    } if (s_elevator.selectedHeight == "L1"){
+                        led.setState(LEDStates.IDLE);
+                    }
                 }
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
