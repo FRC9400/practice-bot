@@ -9,7 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
-
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.endEffectorConstants;
 
@@ -27,6 +27,8 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
     private final StatusSignal<Temperature> rightEndEffectorTemp;
     private final StatusSignal<AngularVelocity> leftEndEffectorAngularVelocity;
     private final StatusSignal<AngularVelocity> rightEndEffectorAngularVelocity;
+    private final StatusSignal<Voltage> leftVoltage;
+    private final StatusSignal<Voltage> rightVoltage;
     
     /* Control Requests */
     private VoltageOut leftVoltageOutRequest;
@@ -50,6 +52,8 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
         rightEndEffectorTemp = rightMotor.getDeviceTemp();
         leftEndEffectorAngularVelocity = leftMotor.getRotorVelocity();
         rightEndEffectorAngularVelocity = rightMotor.getRotorVelocity();
+        leftVoltage = leftMotor.getMotorVoltage();
+        rightVoltage = rightMotor.getMotorVoltage();
     
         /* Control Requests */
         leftVoltageOutRequest = new VoltageOut(0).withEnableFOC(true);
@@ -81,7 +85,9 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
             leftEndEffectorTemp,
             rightEndEffectorTemp,
             leftEndEffectorAngularVelocity,
-            rightEndEffectorAngularVelocity);
+            rightEndEffectorAngularVelocity,
+            leftVoltage,
+            rightVoltage);
 
         /* Optimize Bus Utilization */
         leftMotor.optimizeBusUtilization();
@@ -96,12 +102,15 @@ public class EndEffectorIOTalonFX implements EndEffectorIO {
             leftEndEffectorTemp,
             rightEndEffectorTemp,
             leftEndEffectorAngularVelocity,
-            rightEndEffectorAngularVelocity
+            rightEndEffectorAngularVelocity,
+            leftVoltage,
+            rightVoltage
         );
 
         /* Refresh Inputs */
         inputs.appliedVolts = new double[] {leftVoltageOutRequest.Output, rightVoltageOutRequest.Output};
         inputs.setpointVolts = new double[] {leftSetpointVolts, rightSetpointVolts};
+        inputs.voltage = new double[] {leftVoltage.getValueAsDouble(), rightVoltage.getValueAsDouble()};
         inputs.velocityRPS = new double[] {leftEndEffectorAngularVelocity.getValueAsDouble(), rightEndEffectorAngularVelocity.getValueAsDouble()};
         inputs.currentAmps = new double[] {leftEndEffectorCurrent.getValueAsDouble(), rightEndEffectorCurrent.getValueAsDouble()};
         inputs.tempFahrenheit = new double[] {leftEndEffectorTemp.getValueAsDouble(), rightEndEffectorTemp.getValueAsDouble()};

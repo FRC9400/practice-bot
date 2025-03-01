@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIOAdafruit;
 import frc.robot.Subsystems.Dealgae.DealgaeIO;
 import frc.robot.Subsystems.Dealgae.DealgaeIOTalonFX;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
@@ -29,7 +31,8 @@ public class RobotContainer {
     private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
     private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
     private final LEDs s_leds = new LEDs();
-    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds);
+    private final BeamBreakIO beamBreak = new BeamBreakIOAdafruit(1, false);
+    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds, beamBreak);
     private final Swerve swerve = new Swerve();
   
     public RobotContainer() {

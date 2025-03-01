@@ -15,7 +15,7 @@ public class Elevator {
     public enum ElevatorStates{
         IDLE,
         SETPOINT, 
-        ZEROSENSOR
+        ZERO_SENSOR
     }
 
     public Elevator(ElevatorIO elevatorIO){
@@ -37,7 +37,7 @@ public class Elevator {
             case SETPOINT:
                 elevatorIO.requestMotionMagic(elevatorSetpoint);
                 break;
-            case ZEROSENSOR:
+            case ZERO_SENSOR:
                 elevatorIO.zeroSensor();
                 break;
             default:
@@ -86,7 +86,7 @@ public class Elevator {
     }
 
     public void zeroSensor(){
-        setState(ElevatorStates.ZEROSENSOR);
+        setState(ElevatorStates.ZERO_SENSOR);
     }
 
     public void setHeight(String height){

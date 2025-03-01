@@ -26,8 +26,8 @@ public class LEDs {
     public enum LEDStates{
         DISABLED,
         IDLE,
-        INTAKING,
-        INTOOK,
+        FUNNEL_INTAKING,
+        FUNNEL_INTOOK,
         DEALGAING,
         DEALGAED,
         SCORING,
@@ -73,11 +73,11 @@ public class LEDs {
                 color = Color.kWhite;
                 blinkPattern = BlinkPattern.SOLID;
                 break;
-            case INTAKING:
+            case FUNNEL_INTAKING:
                 color = Color.kGreen;
                 blinkPattern = BlinkPattern.BLINK_FAST;
                 break;
-            case INTOOK:
+            case FUNNEL_INTOOK:
                 color = Color.kGreen;
                 blinkPattern = BlinkPattern.SOLID;
                 break;
@@ -150,12 +150,12 @@ public class LEDs {
         setState(LEDStates.IDLE);
     }
 
-    public void requestIntakingLED() {
-        setState(LEDStates.INTAKING);
+    public void requestFunnelIntakingLED() {
+        setState(LEDStates.FUNNEL_INTAKING);
     }
 
-    public void requestIntookLED() {
-        setState(LEDStates.INTOOK);
+    public void requestFunnelIntookLED() {
+        setState(LEDStates.FUNNEL_INTOOK);
     }
 
     public void requestDealgaingLED() {

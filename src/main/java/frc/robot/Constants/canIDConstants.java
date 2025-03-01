@@ -22,7 +22,11 @@ public class canIDConstants {
     public static final int leftElevatorMotor = 16;
     public static final int rightElevatorMotor = 17;
 
+    /* Intake */
+    public static final int pivotMotor = 18;
+    public static final int rollerMotor = 19;
+
     /* LEDs */
-    public static final int CANdle = 18;
+    public static final int CANdle = 20;
 
 }
