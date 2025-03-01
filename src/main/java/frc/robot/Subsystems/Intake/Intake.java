@@ -31,27 +31,39 @@ public class Intake extends SubsystemBase{
                 this.runOnce(() -> SignalLogger.start()),
                 pivotSysID
                         .quasistatic(Direction.kForward)
-                        .until(Math.abs(inputs.pivotPositionDeg) > 80),
+                        .until(() -> Math.abs(inputs.pivotPositionDeg) > 80),
                 this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
                 pivotSysID
                         .quasistatic(Direction.kReverse)
-                        .until(inputs.pivotPositionDeg < 5),
+                        .until(() -> inputs.pivotPositionDeg < 5),
                 this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
 
                 pivotSysID
                         .dynamic(Direction.kForward)
-                        .until(Math.abs(inputs.pivotPositionDeg) > 110),
+                        .until(() -> Math.abs(inputs.pivotPositionDeg) > 110),
                 this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
 
                 pivotSysID
                         .dynamic(Direction.kReverse)
-                        .until(inputs.pivotPositionDeg < 5),
+                        .until(() -> inputs.pivotPositionDeg < 5),
                 this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
+    }
+
+    public void requestMotionMagic(double degrees){
+        intakeIO.requestMotionMagic(degrees);
+    }
+
+    public void requestPivotVoltage(double volts){
+        intakeIO.requestPivotVoltage(volts);
+    }
+
+    public void requestRollerVoltage(double volts){
+        intakeIO.requestRollerVoltage(volts);
     }
 
     @Override

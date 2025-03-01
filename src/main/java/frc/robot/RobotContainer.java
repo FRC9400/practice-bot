@@ -19,8 +19,11 @@ import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
 import frc.robot.Subsystems.EndEffector.EndEffectorIO;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
+import frc.robot.Subsystems.Intake.Intake;
+import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -31,9 +34,12 @@ public class RobotContainer {
     private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
     private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
     private final LEDs s_leds = new LEDs();
+    //private final Intake intake = new Intake(new IntakeIOTalonFX());
     private final BeamBreakIO beamBreak = new BeamBreakIOAdafruit(1, false);
     private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds, beamBreak);
     private final Swerve swerve = new Swerve();
+
+    LoggedTunableNumber pivotDegrees = new LoggedTunableNumber("Container/Pivot Degrees",50);
   
     public RobotContainer() {
     swerve.zeroGyro();
@@ -95,7 +101,18 @@ public class RobotContainer {
 
         operator.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
-
+        
+        driver.a()
+            .onTrue(new InstantCommand(() -> superstructure.requestIntakeBeamBreak()));
+        
+        driver.b()
+            .onTrue(new InstantCommand(() -> superstructure.requestScoreBeamBreak()));
+        
+        /*driver.x()
+            .onTrue(intake.runSysIdCmd());
+        
+        driver.y()
+            .onTrue(new InstantCommand(() -> intake.requestMotionMagic(pivotDegrees.get())));*/
         
     }
 

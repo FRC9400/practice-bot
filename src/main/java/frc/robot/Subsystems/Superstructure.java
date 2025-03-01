@@ -255,6 +255,14 @@ public class Superstructure extends SubsystemBase {
         setState(SuperstructureStates.INTAKE2);
     }
 
+    public void requestIntakeBeamBreak(){
+        setState(SuperstructureStates.INTAKE_A);
+    }
+
+    public void requestScoreBeamBreak(){
+        setState(SuperstructureStates.SCORE_A_NEW);
+    }
+
     public void requestOuttake(){
         setState(SuperstructureStates.OUTTAKE);
     }
