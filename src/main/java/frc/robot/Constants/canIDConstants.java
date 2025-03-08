@@ -26,7 +26,10 @@ public class canIDConstants {
     public static final int pivotMotor = 18;
     public static final int rollerMotor = 19;
 
+    /* Funnel */
+    public static final int funnelMotor = 20;
+
     /* LEDs */
-    public static final int CANdle = 20;
+    public static final int CANdle = 21;
 
 }
