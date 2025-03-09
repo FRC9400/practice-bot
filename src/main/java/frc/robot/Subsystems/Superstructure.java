@@ -14,6 +14,8 @@ import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.EndEffector.EndEffector;
 import frc.robot.Subsystems.EndEffector.EndEffectorIO;
+import frc.robot.Subsystems.Funnel.Funnel;
+import frc.robot.Subsystems.Funnel.FunnelIO;
 import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.LEDs.LEDs.LEDStates;
 
@@ -23,6 +25,7 @@ public class Superstructure extends SubsystemBase {
     private EndEffector s_endeffector;
     private LEDs led;
     private BeamBreakIO beambreak;
+    private Funnel s_funnel;
     private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
 
     private double stateStartTime = 0;
@@ -33,27 +36,22 @@ public class Superstructure extends SubsystemBase {
     LoggedTunableNumber scoreVoltage = new LoggedTunableNumber("Superstructure/Score PRE BEAMBREAK Voltage", 1);
     LoggedTunableNumber scoreTime = new LoggedTunableNumber("Superstructure/Score PRE BEAMBREAK Time", 0.5);
 
-    public Superstructure(DealgaeIO dealgaeIO, ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, LEDs led, BeamBreakIO beamBreakIO){
+    public Superstructure(DealgaeIO dealgaeIO, ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, LEDs led, FunnelIO funnelIO, BeamBreakIO beamBreakIO){
         this.s_dealgae = new Dealgae(dealgaeIO);
         this.s_elevator = new Elevator(elevatorIO);
         this.s_endeffector = new EndEffector(endEffectorIO);
+        this.s_funnel = new Funnel(funnelIO);
         this.beambreak = beamBreakIO;
         this.led = led;
     }
 
     public enum SuperstructureStates {
         IDLE,
-        INTAKE,
-        POST_INTAKE,
         INTAKE_A,
         INTAKE_B,
-        INTAKE2,
-        OUTTAKE,
+        POST_INTAKE,
         SCORE_A,
         SCORE_B,
-        SCORE_A_NEW,
-        SCORE_B_NEW,
-        SCORE_C_NEW,
         DEALGAE_A,
         DEALGAE_B,
         DEALGAED,
@@ -66,6 +64,7 @@ public class Superstructure extends SubsystemBase {
         s_dealgae.Loop();
         s_elevator.Loop();
         s_endeffector.Loop();
+        s_funnel.Loop();
         led.Loop();
         beambreak.updateInputs(beamBreakInputs);
         Logger.processInputs("BeamBreak", beamBreakInputs);
@@ -83,35 +82,19 @@ public class Superstructure extends SubsystemBase {
                     } if (s_elevator.selectedHeight == "L4"){
                         led.requestL4();
                     } if (s_elevator.selectedHeight == "L1"){
-                        led.setState(LEDStates.IDLE);
+                        led.requestIdleLED();
                     }
                 }
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
+                s_funnel.requestIdle();
                 s_endeffector.requestIdle();
-                break;
-            case INTAKE:
-                led.requestFunnelIntakingLED();
-                s_dealgae.requestIdle();
-                s_elevator.requestIdle();
-                s_endeffector.requestIntake(3);
-                if (s_endeffector.getEndEffectorCurrent() > 11 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
-                    setState(SuperstructureStates.POST_INTAKE);
-                }
-                break;
-            case POST_INTAKE:
-                led.requestFunnelIntookLED();
-                s_dealgae.requestIdle();
-                s_elevator.requestIdle();
-                s_endeffector.requestIdle();
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
-                    setState(SuperstructureStates.IDLE);
-                }
                 break;
             case INTAKE_A:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
+                s_funnel.requestIntake(3);
                 s_endeffector.requestIntake(4);
                 if (RobotController.getFPGATime() / 1.056 - stateStartTime > 0.5 && isBeamBroken()){
                     setState(SuperstructureStates.INTAKE_B);
@@ -121,26 +104,19 @@ public class Superstructure extends SubsystemBase {
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
+                s_funnel.requestIntake(2);
                 s_endeffector.requestIntake(intakeVoltage.get());
                 if (RobotController.getFPGATime() / 1.056 - stateStartTime > intakeTime.get()){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
                 break;
-            case INTAKE2:
-                led.requestFunnelIntakingLED();
+            case POST_INTAKE:
+                led.requestFunnelIntookLED();
                 s_dealgae.requestIdle();
+                s_funnel.requestIdle();
                 s_elevator.requestIdle();
-                s_endeffector.requestIntake(3);
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 3){
-                    setState(SuperstructureStates.IDLE);
-                }
-                break;
-            case OUTTAKE:
-                led.requestFunnelIntakingLED();
-                s_dealgae.requestIdle();
-                s_elevator.requestIdle();
-                s_endeffector.requestIntake(-4);
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 4){
+                s_endeffector.requestIdle();
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -148,6 +124,7 @@ public class Superstructure extends SubsystemBase {
                 led.requestScoringLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestMotionMagicCoral();
+                s_funnel.requestIdle();
                 s_endeffector.requestIdle();
                 if (s_elevator.atSetpoint()){
                     setState(SuperstructureStates.SCORE_B);
@@ -159,33 +136,6 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestHold();
                 s_endeffector.requestScore(3);
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 2) {
-                    setState(SuperstructureStates.ELEVATOR_DOWN);
-                }
-                break;
-            case SCORE_A_NEW:
-                led.requestScoringLED();
-                s_dealgae.requestIdle();
-                s_elevator.requestMotionMagicCoral();
-                s_endeffector.requestIdle();
-                if (s_elevator.atSetpoint()){
-                    setState(SuperstructureStates.SCORE_B_NEW);
-                }
-                break;
-            case SCORE_B_NEW:
-                led.requestScoringLED();
-                s_dealgae.requestIdle();
-                s_elevator.requestHold();
-                s_endeffector.requestScore(4);
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5 && !isBeamBroken()){
-                    setState(SuperstructureStates.SCORE_C_NEW);
-                }
-                break;
-            case SCORE_C_NEW:
-                led.requestScoringLED();
-                s_dealgae.requestIdle();
-                s_elevator.requestHold();
-                s_endeffector.requestScore(scoreVoltage.get());
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > scoreTime.get()){
                     setState(SuperstructureStates.ELEVATOR_DOWN);
                 }
                 break;
@@ -226,7 +176,15 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;            
             case ELEVATOR_DOWN:
-                led.requestIdleLED();
+                if (s_elevator.selectedHeight == "L2"){
+                    led.requestL2();
+                } if (s_elevator.selectedHeight == "L3"){
+                    led.requestL3();
+                } if (s_elevator.selectedHeight == "L4"){
+                    led.requestL4();
+                } if (s_elevator.selectedHeight == "L1"){
+                    led.requestIdleLED();
+                }   
                 s_dealgae.requestIdle();
                 s_elevator.requestElevatorDown();
                 s_endeffector.requestIdle();
@@ -248,23 +206,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void requestIntake(){
-        setState(SuperstructureStates.INTAKE);
-    }
-
-    public void requestIntake2(){
-        setState(SuperstructureStates.INTAKE2);
-    }
-
-    public void requestIntakeBeamBreak(){
         setState(SuperstructureStates.INTAKE_A);
-    }
-
-    public void requestScoreBeamBreak(){
-        setState(SuperstructureStates.SCORE_A_NEW);
-    }
-
-    public void requestOuttake(){
-        setState(SuperstructureStates.OUTTAKE);
     }
 
     public void requestDealgae(){

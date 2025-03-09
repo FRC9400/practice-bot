@@ -57,8 +57,8 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     public IntakeIOTalonFX(){
         /* Motor Objects */
-        pivotMotor = new TalonFX(canIDConstants.pivotMotor, canIDConstants.canivore);
-        rollerMotor = new TalonFX(canIDConstants.rollerMotor, canIDConstants.canivore);
+        pivotMotor = new TalonFX(canIDConstants.pivotMotor, canIDConstants.rio);
+        rollerMotor = new TalonFX(canIDConstants.rollerMotor, canIDConstants.rio);
         pivotConfigs = new TalonFXConfiguration();
         rollerConfigs = new TalonFXConfiguration();
 
@@ -140,9 +140,9 @@ public class IntakeIOTalonFX implements IntakeIO {
         inputs.rollerAppliedVolts = rollerVoltageOutRequest.Output;
         inputs.rollerSetpointVolts = rollerSetpointVolts;
         inputs.rollerVoltage = rollerVoltage.getValueAsDouble();
-        inputs.rollerCurrentAmps = pivotCurrent.getValueAsDouble();
-        inputs.rollerVelocityRPS = pivotAngularVelocity.getValueAsDouble();
-        inputs.rollerTempFahrenheit = pivotTemp.getValueAsDouble();
+        inputs.rollerCurrentAmps = rollerCurrent.getValueAsDouble();
+        inputs.rollerVelocityRPS = rollerAngularVelocity.getValueAsDouble();
+        inputs.rollerTempFahrenheit = rollerTemp.getValueAsDouble();
         
     }
 

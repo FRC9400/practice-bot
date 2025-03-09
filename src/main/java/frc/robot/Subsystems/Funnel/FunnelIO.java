@@ -10,9 +10,10 @@ public interface FunnelIO {
         public double voltage = 0;
         public double velocityRPS = 0;
         public double currentAmps = 0;
-        public double temperature = 0;
+        public double tempFahrenheit = 0;
     }
 
     public default void updateInputs(FunnelInputs inputs){}
+    
     public default void requestVoltage(double volts){}
 }

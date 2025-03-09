@@ -14,67 +14,79 @@ import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.funnelConstants;
 
 public class FunnelIOTalonFX implements FunnelIO {
-    // Motor Objects
+    /* Motor Objects */
     private final TalonFX motor;
     private final TalonFXConfiguration motorConfigs;
 
-    //Status Signals
+    /* Status Signals */
     private final StatusSignal<Current> current;
-    private final StatusSignal<Temperature> temperature;
-    private final StatusSignal<AngularVelocity> velocity;
+    private final StatusSignal<Temperature> temp;
+    private final StatusSignal<AngularVelocity> angularVelocity;
     private final StatusSignal<Voltage> voltage;
 
-    private VoltageOut voltageOutRequest; //control request
+    /* Control Requests */
+    private VoltageOut voltageOutRequest;
 
-    private double setpointVolts; //double
+    /* Doubles */
+    private double setpointVolts; 
     
     public FunnelIOTalonFX(){
-        //Motor Objects
+        /* Motor Objects */
         motor = new TalonFX(canIDConstants.funnelMotor, canIDConstants.canivore);
         motorConfigs = new TalonFXConfiguration();
 
-        //Status Signals
+        /* Status Signals */
         current = motor.getStatorCurrent();
-        temperature = motor.getDeviceTemp();
-        velocity = motor.getVelocity();
+        temp = motor.getDeviceTemp();
+        angularVelocity = motor.getRotorVelocity();
         voltage = motor.getMotorVoltage();
 
-        voltageOutRequest = new VoltageOut(0); //control req
-        setpointVolts = 0; //double
+        /* Control Requests */
+        voltageOutRequest = new VoltageOut(0).withEnableFOC(true);
 
-        //Current Limit Config
+        /* Doubles */
+        setpointVolts = 0;
+
+        /* Current Limit Configuration */
         motorConfigs.CurrentLimits.StatorCurrentLimit = funnelConstants.statorCurrentLimit;
         motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        //Motor Output Config (+inv)
+        /* Motor Output Configuration */
         motorConfigs.MotorOutput.Inverted = funnelConstants.funnelMotorInvert;
         motor.getConfigurator().apply(motorConfigs);
 
-        //Frequency
+        /* Set Frequency */
         BaseStatusSignal.setUpdateFrequencyForAll(
             50,
             current,
-            temperature,
+            temp,
             voltage,
-            velocity
+            angularVelocity
         );
 
-        //Optimize bus utilization
+        /* Optimize Bus Utilization */
         motor.optimizeBusUtilization();
     }
 
     public void updateInputs(FunnelInputs inputs){
-        //Refresh status signals
+        /* Refresh Status Signals */
         BaseStatusSignal.refreshAll(
             current,
-            temperature,
+            temp,
             voltage,
-            velocity
+            angularVelocity
         );
+
+        /* Refresh Inputs */
+        inputs.appliedVolts = voltageOutRequest.Output;
+        inputs.setpointVolts = setpointVolts;
+        inputs.voltage = voltage.getValueAsDouble();
+        inputs.currentAmps = current.getValueAsDouble();
+        inputs.velocityRPS = angularVelocity.getValueAsDouble();
+        inputs.tempFahrenheit = temp.getValueAsDouble();
     }
 
-    //request voltage
-    public void requestVoltage(double volts, double ratio){
+    public void requestVoltage(double volts){
         this.setpointVolts = volts;
         motor.setControl(voltageOutRequest.withOutput(volts));
     }

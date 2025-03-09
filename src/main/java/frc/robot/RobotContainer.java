@@ -19,6 +19,8 @@ import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
 import frc.robot.Subsystems.EndEffector.EndEffectorIO;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
+import frc.robot.Subsystems.Funnel.FunnelIO;
+import frc.robot.Subsystems.Funnel.FunnelIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
@@ -34,9 +36,10 @@ public class RobotContainer {
     private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
     private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
     private final LEDs s_leds = new LEDs();
+    private final FunnelIO s_funnel = new FunnelIOTalonFX();
     //private final Intake intake = new Intake(new IntakeIOTalonFX());
-    private final BeamBreakIO beamBreak = new BeamBreakIOAdafruit(1, false);
-    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds, beamBreak);
+    private final BeamBreakIO beamBreak = new BeamBreakIOAdafruit(6, false);
+    private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds, s_funnel, beamBreak);
     private final Swerve swerve = new Swerve();
 
     LoggedTunableNumber pivotDegrees = new LoggedTunableNumber("Container/Pivot Degrees",50);
@@ -78,15 +81,6 @@ public class RobotContainer {
         driver.leftTrigger()
             .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
 
-        operator.leftBumper()
-            .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
-        
-        operator.leftTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.requestIntake2()));
-
-        operator.rightBumper()
-            .onTrue(new InstantCommand(() -> superstructure.requestOuttake()));
-
         operator.rightTrigger()
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
 
@@ -103,10 +97,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
         
         driver.a()
-            .onTrue(new InstantCommand(() -> superstructure.requestIntakeBeamBreak()));
-        
-        driver.b()
-            .onTrue(new InstantCommand(() -> superstructure.requestScoreBeamBreak()));
+            .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
         
         /*driver.x()
             .onTrue(intake.runSysIdCmd());
