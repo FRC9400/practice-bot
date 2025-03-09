@@ -45,7 +45,7 @@ public class RobotContainer {
     LoggedTunableNumber pivotDegrees = new LoggedTunableNumber("Container/Pivot Degrees",50);
   
     public RobotContainer() {
-    swerve.zeroGyro();
+    swerve.resetGyro(0); //zeroes quest as well
     swerve.zeroWheels();
     swerve.setDefaultCommand(
         new TeleopSwerve(
@@ -67,7 +67,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
         
         driver.back()
-            .onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
+            .onTrue(new InstantCommand(() -> swerve.resetGyro(0))); 
         
         driver.rightBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
@@ -106,9 +106,6 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> intake.requestMotionMagic(pivotDegrees.get())));*/
         
     }
-
-
-
 
     public Swerve getSwerve(){
         return swerve;
