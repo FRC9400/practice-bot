@@ -6,7 +6,7 @@ public class EndEffector {
     private final EndEffectorIO endEffectorIO;
     private EndEffectorInputsAutoLogged inputs = new EndEffectorInputsAutoLogged();
     private EndEffectorStates endEffectorState = EndEffectorStates.IDLE;
-    private double[] voltageSetpoint = {0,1};
+    private double voltageSetpoint = 0;
 
     public enum EndEffectorStates{
         IDLE,
@@ -24,13 +24,13 @@ public class EndEffector {
         Logger.recordOutput("EndEffectorState", this.endEffectorState);
         switch(endEffectorState){
             case IDLE:
-                endEffectorIO.requestVoltage(0,0);
+                endEffectorIO.requestVoltage(0);
                 break;
             case INTAKE:
-                endEffectorIO.requestVoltage(voltageSetpoint[0],voltageSetpoint[1]);
+                endEffectorIO.requestVoltage(voltageSetpoint);
                 break;
             case SCORE:
-                endEffectorIO.requestVoltage(voltageSetpoint[0],voltageSetpoint[1]);
+                endEffectorIO.requestVoltage(voltageSetpoint);
             default:
                 break;
         }
@@ -41,17 +41,17 @@ public class EndEffector {
     }
 
     public void requestIntake(double volts){
-        voltageSetpoint[0] = volts;
+        voltageSetpoint = volts;
         setState(EndEffectorStates.INTAKE);
     }
 
     public void requestScore(double volts){
-        voltageSetpoint[0] = volts;
+        voltageSetpoint = volts;
         setState(EndEffectorStates.SCORE);
     }
 
     public double getEndEffectorCurrent(){
-        return inputs.currentAmps[0];
+        return inputs.currentAmps;
     }
 
     public void setState(EndEffectorStates nextState){

@@ -1,6 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -24,6 +25,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import frc.commons.Conversions;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.moduleConstants;
 
@@ -51,6 +53,20 @@ public class ModuleIOTalonFX{
     private TalonFXConfiguration steerConfigs;
     private CANcoderConfiguration angleEncoderConfigs;
 
+    LoggedTunableNumber drivekP = new LoggedTunableNumber("Swerve/Drive/kP", 0.14);
+    LoggedTunableNumber drivekI = new LoggedTunableNumber("Swerve/Drive/kI", 0);
+    LoggedTunableNumber drivekD = new LoggedTunableNumber("Swerve/Drive/kD", 0);
+    LoggedTunableNumber drivekS = new LoggedTunableNumber("Swerve/Drive/kS", 0.115);
+    LoggedTunableNumber drivekV = new LoggedTunableNumber("Swerve/Drive/kV", 0.133);
+    LoggedTunableNumber drivekA = new LoggedTunableNumber("Swerve/Drive/kA", 1.0);
+    
+    LoggedTunableNumber steerkP = new LoggedTunableNumber("Swerve/Steer/kP", 6);
+    LoggedTunableNumber steerkI = new LoggedTunableNumber("Swerve/Steer/kI", 0);
+    LoggedTunableNumber steerkD = new LoggedTunableNumber("Swerve/Steer/kD", 0.002);
+    LoggedTunableNumber steerkS = new LoggedTunableNumber("Swerve/Steer/kS", 0.24);
+    LoggedTunableNumber steerkV = new LoggedTunableNumber("Swerve/Steer/kV", 0.001);
+    LoggedTunableNumber steerkA = new LoggedTunableNumber("Swerve/Steer/kA", 0.16);
+    
 
     private final StatusSignal<Angle> m_steerPosition;
     private final StatusSignal<Angle> m_drivePosition;
@@ -118,12 +134,12 @@ public class ModuleIOTalonFX{
 
         var driveSlot0Configs = driveConfigs.Slot0;
         
-        driveSlot0Configs.kP = 0.14;
-        driveSlot0Configs.kI = 0;
-        driveSlot0Configs.kD = 0;
-        driveSlot0Configs.kS = 0.115;
-        driveSlot0Configs.kV = 0.133;
-        driveSlot0Configs.kA = 1;
+        driveSlot0Configs.kP = drivekP.get();
+        driveSlot0Configs.kI = drivekI.get();
+        driveSlot0Configs.kD = drivekD.get();
+        driveSlot0Configs.kS = drivekS.get();
+        driveSlot0Configs.kV = drivekV.get();
+        driveSlot0Configs.kA = drivekA.get();
 
         var driveSlot1Configs = driveConfigs.Slot1;
         
@@ -148,14 +164,12 @@ public class ModuleIOTalonFX{
 
 
         var steerSlot0Configs = steerConfigs.Slot0;
-        steerSlot0Configs.kP = 6;
-        steerSlot0Configs.kI = 0;
-        steerSlot0Configs.kD = 0.002;
-        steerSlot0Configs.kS = 0.24;
-        steerSlot0Configs.kV = 0.001;
-        steerSlot0Configs.kA = 0.16;
-
-        
+        steerSlot0Configs.kP = steerkP.get();
+        steerSlot0Configs.kI = steerkI.get();
+        steerSlot0Configs.kD = steerkD.get();
+        steerSlot0Configs.kS = steerkS.get();
+        steerSlot0Configs.kV = steerkV.get();
+        steerSlot0Configs.kA = steerkA.get();
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;
@@ -319,4 +333,43 @@ public class ModuleIOTalonFX{
         
     }
 
+    public void updateTunableNumbers(){
+        if(drivekD.hasChanged(drivekD.hashCode())||
+        drivekI.hasChanged(drivekI.hashCode())||
+        drivekP.hasChanged(drivekP.hashCode())||
+        drivekS.hasChanged(drivekS.hashCode())||
+        drivekV.hasChanged(drivekV.hashCode())||
+        drivekA.hasChanged(drivekA.hashCode())
+        ){
+            var driveSlot0Configs = driveConfigs.Slot0;
+        
+            driveSlot0Configs.kP = drivekP.get();
+            driveSlot0Configs.kI = drivekI.get();
+            driveSlot0Configs.kD = drivekD.get();
+            driveSlot0Configs.kS = drivekS.get();
+            driveSlot0Configs.kV = drivekV.get();
+            driveSlot0Configs.kA = drivekA.get();
+
+            driveMotor.getConfigurator().apply(driveConfigs);
+        }
+
+        if(steerkD.hasChanged(steerkD.hashCode())||
+        steerkI.hasChanged(steerkI.hashCode())||
+        steerkP.hasChanged(steerkP.hashCode())||
+        steerkS.hasChanged(steerkS.hashCode())||
+        steerkV.hasChanged(steerkV.hashCode())||
+        steerkA.hasChanged(steerkA.hashCode())
+        ){
+            var steerSlot0Configs = steerConfigs.Slot0;
+        
+            steerSlot0Configs.kP = steerkP.get();
+            steerSlot0Configs.kI = steerkI.get();
+            steerSlot0Configs.kD = steerkD.get();
+            steerSlot0Configs.kS = steerkS.get();
+            steerSlot0Configs.kV = steerkV.get();
+            steerSlot0Configs.kA = steerkA.get();
+
+            steerMotor.getConfigurator().apply(steerConfigs);
+        }
+    }
 }

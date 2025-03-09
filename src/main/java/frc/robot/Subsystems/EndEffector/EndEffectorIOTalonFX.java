@@ -15,112 +15,80 @@ import frc.robot.Constants.endEffectorConstants;
 
 public class EndEffectorIOTalonFX implements EndEffectorIO {
     /* Motor Objects */
-    private final TalonFX leftMotor;
-    private final TalonFX rightMotor;
-    private final TalonFXConfiguration leftMotorConfigs;
-    private final TalonFXConfiguration rightMotorConfigs;
+    private final TalonFX motor;
+    private final TalonFXConfiguration motorConfigs;
 
     /* Status Signals */
-    private final StatusSignal<Current> leftEndEffectorCurrent;
-    private final StatusSignal<Current> rightEndEffectorCurrent;
-    private final StatusSignal<Temperature> leftEndEffectorTemp;
-    private final StatusSignal<Temperature> rightEndEffectorTemp;
-    private final StatusSignal<AngularVelocity> leftEndEffectorAngularVelocity;
-    private final StatusSignal<AngularVelocity> rightEndEffectorAngularVelocity;
-    private final StatusSignal<Voltage> leftVoltage;
-    private final StatusSignal<Voltage> rightVoltage;
+    private final StatusSignal<Current> endEffectorCurrent;
+    private final StatusSignal<Temperature> endEffectorTemp;
+    private final StatusSignal<AngularVelocity> endEffectorAngularVelocity;
+    private final StatusSignal<Voltage> voltage;
     
     /* Control Requests */
-    private VoltageOut leftVoltageOutRequest;
-    private VoltageOut rightVoltageOutRequest;
+    private VoltageOut voltageOutRequest;
 
     /* Doubles */
-    private double leftSetpointVolts;
-    private double rightSetpointVolts;
+    private double setpointVolts;
 
     public EndEffectorIOTalonFX(){
         /* Motor Objects */
-        leftMotor = new TalonFX(canIDConstants.leftEndEffectorMotor, canIDConstants.rio);
-        rightMotor = new TalonFX(canIDConstants.rightEndEffectorMotor, canIDConstants.rio);
-        leftMotorConfigs = new TalonFXConfiguration();
-        rightMotorConfigs = new TalonFXConfiguration();
+        motor = new TalonFX(canIDConstants.endEffectorMotor, canIDConstants.rio);
+        motorConfigs = new TalonFXConfiguration();
 
         /* Status Signals */
-        leftEndEffectorCurrent = leftMotor.getStatorCurrent();
-        rightEndEffectorCurrent = rightMotor.getStatorCurrent();
-        leftEndEffectorTemp = leftMotor.getDeviceTemp();
-        rightEndEffectorTemp = rightMotor.getDeviceTemp();
-        leftEndEffectorAngularVelocity = leftMotor.getRotorVelocity();
-        rightEndEffectorAngularVelocity = rightMotor.getRotorVelocity();
-        leftVoltage = leftMotor.getMotorVoltage();
-        rightVoltage = rightMotor.getMotorVoltage();
+        endEffectorCurrent = motor.getStatorCurrent();
+        endEffectorTemp = motor.getDeviceTemp();
+        endEffectorAngularVelocity = motor.getRotorVelocity();
+        voltage = motor.getMotorVoltage();
     
         /* Control Requests */
-        leftVoltageOutRequest = new VoltageOut(0).withEnableFOC(true);
-        rightVoltageOutRequest = new VoltageOut(0).withEnableFOC(true);
+        voltageOutRequest = new VoltageOut(0).withEnableFOC(true);
 
         /* Doubles */
-        leftSetpointVolts = 0;
-        rightSetpointVolts = 0;
+        setpointVolts = 0;
 
         /* Current Limit Configuration */
-        leftMotorConfigs.CurrentLimits.StatorCurrentLimit = endEffectorConstants.statorCurrentLimit;
-        leftMotorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-        rightMotorConfigs.CurrentLimits.StatorCurrentLimit = endEffectorConstants.statorCurrentLimit;
-        rightMotorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        motorConfigs.CurrentLimits.StatorCurrentLimit = endEffectorConstants.statorCurrentLimit;
+        motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         /* Motor Output Configuration */
-        leftMotorConfigs.MotorOutput.Inverted = endEffectorConstants.leftEndEffectorMotorInvert;
-        rightMotorConfigs.MotorOutput.Inverted = endEffectorConstants.rightEndEffectorMotorInvert;
+        motorConfigs.MotorOutput.Inverted = endEffectorConstants.endEffectorMotorInvert;
 
         /* Configure Motors */
-        leftMotor.getConfigurator().apply(leftMotorConfigs);
-        rightMotor.getConfigurator().apply(rightMotorConfigs);
+        motor.getConfigurator().apply(motorConfigs);
 
         /* Set Frequency */
         BaseStatusSignal.setUpdateFrequencyForAll(
             50,
-            leftEndEffectorCurrent,
-            rightEndEffectorCurrent,
-            leftEndEffectorTemp,
-            rightEndEffectorTemp,
-            leftEndEffectorAngularVelocity,
-            rightEndEffectorAngularVelocity,
-            leftVoltage,
-            rightVoltage);
+            endEffectorCurrent,
+            endEffectorTemp,
+            endEffectorAngularVelocity,
+            voltage);
 
         /* Optimize Bus Utilization */
-        leftMotor.optimizeBusUtilization();
-        rightMotor.optimizeBusUtilization();
+        motor.optimizeBusUtilization();
     }
 
     public void updateInputs(EndEffectorInputs inputs){
         /* Refresh Status Signals */
         BaseStatusSignal.refreshAll(
-            leftEndEffectorCurrent,
-            rightEndEffectorCurrent,
-            leftEndEffectorTemp,
-            rightEndEffectorTemp,
-            leftEndEffectorAngularVelocity,
-            rightEndEffectorAngularVelocity,
-            leftVoltage,
-            rightVoltage
+            endEffectorCurrent,
+            endEffectorTemp,
+            endEffectorAngularVelocity,
+            voltage  
         );
 
         /* Refresh Inputs */
-        inputs.appliedVolts = new double[] {leftVoltageOutRequest.Output, rightVoltageOutRequest.Output};
-        inputs.setpointVolts = new double[] {leftSetpointVolts, rightSetpointVolts};
-        inputs.voltage = new double[] {leftVoltage.getValueAsDouble(), rightVoltage.getValueAsDouble()};
-        inputs.velocityRPS = new double[] {leftEndEffectorAngularVelocity.getValueAsDouble(), rightEndEffectorAngularVelocity.getValueAsDouble()};
-        inputs.currentAmps = new double[] {leftEndEffectorCurrent.getValueAsDouble(), rightEndEffectorCurrent.getValueAsDouble()};
-        inputs.tempFahrenheit = new double[] {leftEndEffectorTemp.getValueAsDouble(), rightEndEffectorTemp.getValueAsDouble()};
+        inputs.appliedVolts = voltageOutRequest.Output;
+        inputs.setpointVolts = setpointVolts;
+        inputs.voltage = voltage.getValueAsDouble();
+        inputs.velocityRPS = endEffectorAngularVelocity.getValueAsDouble();
+        inputs.currentAmps = endEffectorCurrent.getValueAsDouble();
+        inputs.tempFahrenheit = endEffectorTemp.getValueAsDouble();
     }
 
-    public void requestVoltage(double volts, double ratio){
-        this.leftSetpointVolts = volts;
-        this.rightSetpointVolts = volts * ratio;
-        leftMotor.setControl(leftVoltageOutRequest.withOutput(volts));
-        rightMotor.setControl(rightVoltageOutRequest.withOutput(volts * ratio));
+    public void requestVoltage(double volts){
+        this.setpointVolts = volts;
+        motor.setControl(voltageOutRequest.withOutput(volts));
     }
-
 }
