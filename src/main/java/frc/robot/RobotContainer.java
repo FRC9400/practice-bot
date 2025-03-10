@@ -72,14 +72,11 @@ public class RobotContainer {
         driver.rightBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
         
-        driver.rightTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.requestProcessor()));
-        
         driver.leftBumper()
-            .onTrue(new InstantCommand(() -> superstructure.requestScore()));
+            .onTrue(new InstantCommand(() -> superstructure.executePurple()));
         
         driver.leftTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
+            .onTrue(new InstantCommand(() -> superstructure.executeGreen()));
 
         operator.rightTrigger()
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
@@ -95,9 +92,6 @@ public class RobotContainer {
 
         operator.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
-        
-        driver.a()
-            .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
         
         /*driver.x()
             .onTrue(intake.runSysIdCmd());

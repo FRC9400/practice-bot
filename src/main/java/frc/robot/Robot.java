@@ -39,9 +39,6 @@ public class Robot extends LoggedRobot {
   Command pos1preload;
   Command pos2preload;
   Command pos3preload;
-  Command pos1twopiece;
-  Command pos2twopiece;
-  Command pos3twopiece;
 
   private AutonomousSelector selector;
 
@@ -88,12 +85,9 @@ public class Robot extends LoggedRobot {
       tune_x = autos.tune("tuneX");
       tune_y = autos.tune("tuneY");
       tune_theta = autos.tune("tuneTheta");
-      pos1preload = autos.Preload("Position 1", "Pos1toI", "L2");
-      pos2preload = autos.Preload("Position 2", "Pos2toI", "L2");
-      pos3preload = autos.Preload("Position 3", "Pos3toF", "L2");
-      pos1twopiece = autos.TwoPiece("Position 1", "Pos1toI", "ItoSource", "SourcetoJ", "L2", "L2");
-      pos2twopiece = autos.TwoPiece("Position 2", "Pos2toI", "ItoSource", "SourcetoJ", "L2", "L2");
-      pos3twopiece = autos.TwoPiece("Position 3", "Pos3toF", "FtoSource", "SourcetoE", "L2", "L2");
+      pos1preload = autos.Preload("Position 1", "Pos1toI", "L4");
+      pos2preload = autos.Preload("Position 2", "Pos2toG", "L4");
+      pos3preload = autos.Preload("Position 3", "Pos3toE", "L4");
       built = true;
     }
 
@@ -127,26 +121,13 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand = pos1preload;
     }
 
-    if(selector.get() == modes.POS2_PRELOAD_TO_I){
+    if(selector.get() == modes.POS2_PRELOAD_TO_G){
       m_autonomousCommand = pos2preload;
     }
 
-    if(selector.get() == modes.POS3_PRELOAD_TO_F){
+    if(selector.get() == modes.POS3_PRELOAD_TO_E){
       m_autonomousCommand = pos3preload;
     }
-
-    if(selector.get() == modes.POS1_TWOPIECE_I_J){
-      m_autonomousCommand = pos1twopiece;
-    }
-
-    if(selector.get() == modes.POS2_TWOPIECE_I_J){
-      m_autonomousCommand = pos2twopiece;
-    }
-
-    if(selector.get() == modes.POS3_TWOPIECE_F_E){
-      m_autonomousCommand = pos3twopiece;
-    }
-
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

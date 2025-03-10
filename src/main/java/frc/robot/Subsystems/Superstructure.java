@@ -134,8 +134,8 @@ public class Superstructure extends SubsystemBase {
                 led.requestScoringLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestHold();
-                s_endeffector.requestScore(3);
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 2) {
+                s_endeffector.requestScore(4);
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.ELEVATOR_DOWN);
                 }
                 break;
@@ -235,6 +235,25 @@ public class Superstructure extends SubsystemBase {
 
     public void setL4(){
         s_elevator.setHeight("L4");
+    }
+
+
+    public void executePurple(){
+        if(s_elevator.selectedHeight == "L1"){
+            requestIntake();
+        }
+        else{
+            requestScore();
+        }
+    }
+
+    public void executeGreen(){
+        if(s_elevator.selectedHeight == "L1"){
+            requestProcessor();
+        }
+        else{
+            requestDealgae();
+        }
     }
 
     public boolean isBeamBroken(){

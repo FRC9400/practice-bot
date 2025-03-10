@@ -13,11 +13,8 @@ public class AutonomousSelector {
             TUNE_Y,
             TUNE_THETA,
             POS1_PRELOAD_TO_I,
-            POS2_PRELOAD_TO_I,
-            POS3_PRELOAD_TO_F,
-            POS1_TWOPIECE_I_J,
-            POS2_TWOPIECE_I_J,
-            POS3_TWOPIECE_F_E
+            POS2_PRELOAD_TO_G,
+            POS3_PRELOAD_TO_E
         };
     
     public AutonomousSelector(Swerve swerve, Autos autos){
@@ -26,11 +23,8 @@ public class AutonomousSelector {
         autonomousSelector.addOption("Tune Y", modes.TUNE_Y);
         autonomousSelector.addOption("Tune Theta", modes.TUNE_THETA);
         autonomousSelector.addOption("Position 1 Preload to F", modes.POS1_PRELOAD_TO_I);
-        autonomousSelector.addOption("Position 2 Preload to I", modes.POS2_PRELOAD_TO_I);
-        autonomousSelector.addOption("Position 3 Preload to F", modes.POS3_PRELOAD_TO_F);
-        autonomousSelector.addOption("Position 1 Two Piece to I then J", modes.POS1_TWOPIECE_I_J);
-        autonomousSelector.addOption("Position 2 Two Piece to I then J", modes.POS2_TWOPIECE_I_J);
-        autonomousSelector.addOption("Position 3 Two Piece to F then E", modes.POS3_TWOPIECE_F_E);
+        autonomousSelector.addOption("Position 2 Preload to I", modes.POS2_PRELOAD_TO_G);
+        autonomousSelector.addOption("Position 3 Preload to F", modes.POS3_PRELOAD_TO_E);
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 
