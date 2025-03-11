@@ -92,17 +92,17 @@ public class Swerve extends SubsystemBase{
     OdometryThread m_OdometryThread;
     BaseStatusSignal[] m_allSignals;
 
-    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 3);
+    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 0.77);
     LoggedTunableNumber xkI = new LoggedTunableNumber("Choreo/X Controller kI", 0);
-    LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0);
+    LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0.01);
 
-    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 3);
+    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 0.2);
     LoggedTunableNumber ykI = new LoggedTunableNumber("Choreo/Y Controller kI", 0);
     LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0);
 
-    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP", 3);
+    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP", 13.25);
     LoggedTunableNumber thetakI = new LoggedTunableNumber("Choreo/Heading Controller kI", 0);
-    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0);
+    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0.09);
 
     // from swervestate class
     public Pose2d poseRaw;
@@ -206,7 +206,7 @@ public class Swerve extends SubsystemBase{
                     currentModuleStates[i] = Modules[i].getState();
                   }
                   heading =
-                  new Rotation2d(BaseStatusSignal.getLatencyCompensatedValue(m_heading, m_angularVelocity).magnitude() * Math.PI/180.0);
+                  new Rotation2d(m_heading.getValueAsDouble() * Math.PI/180.0);
 
                   odometry.update(heading, currentModulePositions); //update odoemtry threa
                   rawQuestPose = new Pose2d(questNav.getPose().getTranslation(), questNav.getPose().getRotation().unaryMinus());
@@ -265,7 +265,7 @@ public Swerve() {
 
 @Override
 public void periodic(){
-    Logger.recordOutput("Swerve/GyroDeg", Conversions.RotationsToDegrees(m_heading.getValueAsDouble(), 1));
+    Logger.recordOutput("Swerve/GyroDeg", m_heading.getValueAsDouble());
     poseEstimator.addVisionMeasurement(transformedQuestPose, questNav.timestamp()); //units? should i be update pose estimator in periodic instead? 250hz vs 120hz
     for (int i = 0; i < 4; i++){
         Logger.recordOutput("Swerve/Module/ModuleNum[" + i + "]DriveStator", Modules[i].getCurrentSignals()[0].getValueAsDouble());
@@ -299,7 +299,7 @@ public void requestDesiredState(double x_speed, double y_speed, double rot_speed
             y_speed,
             rot_speed,
             gyroPosition));
-        kinematics.desaturateWheelSpeeds(setpointModuleStates, 12);
+        kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeedMeterPerSecond);
         for (int i = 0; i < 4; i++) {
             setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
             Modules[i].setDesiredState(setpointModuleStates[i], true);
@@ -479,7 +479,6 @@ public Pose2d transformQuestPose(Transform2d initialPoseOffset){
     return TransformedQuestPose;
    
 }
-
 
 private void logModuleStates(String key, SwerveModuleState[] states) {
     List<Double> dataArray = new ArrayList<Double>();

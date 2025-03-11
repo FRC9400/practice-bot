@@ -33,6 +33,7 @@ public class Autos {
         final AutoRoutine routine = autoFactory.newRoutine(name);
         final AutoTrajectory trajectory = routine.trajectory(name);
         routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd()));
+        //swerve.resetPose(trajectory.getInitialPose().get());
         return routine.cmd();
     }
 

@@ -122,9 +122,9 @@ public class ModuleIOTalonFX{
         driveSlot0Configs.kP = 0.14;
         driveSlot0Configs.kI = 0;
         driveSlot0Configs.kD = 0;
-        driveSlot0Configs.kS = 0.115;
-        driveSlot0Configs.kV = 0.133;
-        driveSlot0Configs.kA = 1;
+        driveSlot0Configs.kS = 0.111;
+        driveSlot0Configs.kV = 0.12;
+        driveSlot0Configs.kA = 0.5;
 
         var driveSlot1Configs = driveConfigs.Slot1;
         
@@ -293,7 +293,8 @@ public class ModuleIOTalonFX{
                 Conversions.DegreesToRotations(angleDeg, swerveConstants.moduleConstants.steerGearRatio)));
     }
 
-    public void setDriveVelocity(double velocityRPS) {
+    public void setDriveVelocity(double velocityMPS) {
+        double velocityRPS = Conversions.MPStoRPS(velocityMPS, swerveConstants.moduleConstants.wheelCircumferenceMeters, swerveConstants.moduleConstants.driveGearRatio);
         velocityVoltageRequest.Velocity = velocityRPS;
         driveMotor.setControl(velocityVoltageRequest);
     }
