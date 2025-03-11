@@ -19,8 +19,8 @@ public class Autos {
         this.swerve = swerve;
         this.superstructure = superstructure;
         autoFactory = new AutoFactory(
-            swerve::getEstimatedPose,
-            swerve::resetOdometry,
+            swerve::getPoseRaw,
+            swerve::resetPose,
             swerve::followChoreoTraj,
             true,
             swerve);    

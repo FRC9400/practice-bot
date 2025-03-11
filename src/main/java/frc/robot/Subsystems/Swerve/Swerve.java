@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -47,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.commons.Conversions;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
@@ -78,7 +80,7 @@ public class Swerve extends SubsystemBase{
     Pose2d rawQuestPose;
     Pose2d initialPose = new Pose2d();
     boolean initialPoseFed = false;
-    Transform2d questToRobot = new Transform2d(new Translation2d(), new Rotation2d());
+    Transform2d questToRobot = new Transform2d(new Translation2d(0.0135382, 0.2794), new Rotation2d(Math.PI/2));
     private QuestNav questNav = new QuestNav();
     Pigeon2 pigeon = new Pigeon2(canIDConstants.pigeon, "canivore");
     private StatusSignal<Angle> m_heading = pigeon.getYaw();
@@ -90,6 +92,17 @@ public class Swerve extends SubsystemBase{
     OdometryThread m_OdometryThread;
     BaseStatusSignal[] m_allSignals;
 
+    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 3);
+    LoggedTunableNumber xkI = new LoggedTunableNumber("Choreo/X Controller kI", 0);
+    LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0);
+
+    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 3);
+    LoggedTunableNumber ykI = new LoggedTunableNumber("Choreo/Y Controller kI", 0);
+    LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0);
+
+    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP", 3);
+    LoggedTunableNumber thetakI = new LoggedTunableNumber("Choreo/Heading Controller kI", 0);
+    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0);
 
     // from swervestate class
     public Pose2d poseRaw;
@@ -272,7 +285,54 @@ public void periodic(){
     Logger.recordOutput("Swerve/FailedDaqs", FailedDaqs);
 
 }
+public void requestDesiredState(double x_speed, double y_speed, double rot_speed, boolean fieldRelative, boolean isOpenLoop){
 
+    Rotation2d[] steerPositions = new Rotation2d[4];
+    SwerveModuleState[] desiredModuleStates = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++) {
+        steerPositions[i] = Modules[i].getPosition(false).angle;
+    }
+    Rotation2d gyroPosition = heading;
+    if (fieldRelative && isOpenLoop){
+        desiredModuleStates = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
+            x_speed,
+            y_speed,
+            rot_speed,
+            gyroPosition));
+        kinematics.desaturateWheelSpeeds(setpointModuleStates, 12);
+        for (int i = 0; i < 4; i++) {
+            setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
+            Modules[i].setDesiredState(setpointModuleStates[i], true);
+        }
+    }
+    else if(fieldRelative && !isOpenLoop){
+        desiredModuleStates = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
+            x_speed,
+            y_speed,
+            rot_speed,
+            gyroPosition));
+        kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeedMeterPerSecond);
+        for (int i = 0; i < 4; i++) {
+            setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
+            Modules[i].setDesiredState(setpointModuleStates[i], false);
+        }
+    }
+    else if(!fieldRelative && !isOpenLoop){
+        desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(
+            x_speed,
+            y_speed,
+            rot_speed
+            ));
+        kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeedMeterPerSecond);
+        for (int i = 0; i < 4; i++) {
+            setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
+            Modules[i].setDesiredState(setpointModuleStates[i], false);
+        }
+    }
+    
+}
+
+/* 
 public void requestDesiredState(double x_speed, double y_speed, double rot_speed, boolean fieldRelative, boolean isOpenLoop){
     Rotation2d gyroPosition = new Rotation2d(m_heading.getValueAsDouble() * Math.PI * 2);
     if (fieldRelative && isOpenLoop){
@@ -309,7 +369,7 @@ public void requestDesiredState(double x_speed, double y_speed, double rot_speed
         }
     }
     
-}
+}*/
 public void feedInitialPose(Pose2d intialPose){
     this.initialPose = initialPose;
     initialPoseFed = true;
@@ -330,12 +390,11 @@ public void resetPoseEstimator(Pose2d pose){
 
 public void resetPose(Pose2d pose){
     odometry.resetPosition(heading, currentModulePositions, pose);
+
 }
 
-public void resetOdometry(Pose2d pose){
-    feedInitialPose(pose);
-    resetPose(pose);
-    resetPoseEstimator(pose);
+public Pose2d getPoseRaw(){
+    return odometry.getPoseMeters();
 }
 
 public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
@@ -433,10 +492,10 @@ private void logModuleStates(String key, SwerveModuleState[] states) {
 
 public void followChoreoTraj(SwerveSample sample) {
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(
-        sample.vx + AutoConstants.xController.calculate(poseRaw.getX(), sample.x),
-        sample.vy + AutoConstants.yController.calculate(poseRaw.getY(), sample.y),
-        sample.omega + AutoConstants.headingController.calculate(poseRaw.getRotation().getRadians(), sample.heading)
-    ), poseRaw.getRotation()
+        sample.vx + new PIDController(xkP.get(), xkI.get(), xkD.get()).calculate(odometry.getPoseMeters().getX(), sample.x),
+        sample.vy + new PIDController(ykP.get(), ykI.get(), ykD.get()).calculate(odometry.getPoseMeters().getY(), sample.y),
+        sample.omega + new PIDController(thetakP.get(), thetakI.get(), thetakD.get()).calculate(odometry.getPoseMeters().getRotation().getRadians(), sample.heading)
+    ), odometry.getPoseMeters().getRotation()
     );
     driveRobotRelative(speeds);
 }
