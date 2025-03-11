@@ -134,7 +134,7 @@ public class Superstructure extends SubsystemBase {
                 led.requestScoringLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestHold();
-                s_endeffector.requestScore(4);
+                s_endeffector.requestScore(3);
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.ELEVATOR_DOWN);
                 }
