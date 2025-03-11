@@ -65,7 +65,7 @@ public class Elevator {
 
     public void requestMotionMagicAlgae(){
         if (selectedHeight == "L2"){
-            elevatorSetpoint = elevatorConstants.L3;
+            elevatorSetpoint = elevatorConstants.L2Algae;
         } else if (selectedHeight == "L3"){
             elevatorSetpoint = elevatorConstants.L3Algae;
         } 
