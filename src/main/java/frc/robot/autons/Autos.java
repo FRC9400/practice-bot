@@ -33,33 +33,15 @@ public class Autos {
         final AutoRoutine routine = autoFactory.newRoutine(name);
         final AutoTrajectory trajectory = routine.trajectory(name);
         routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd()));
-        //swerve.resetPose(trajectory.getInitialPose().get());
         return routine.cmd();
     }
 
-    public Command Preload(String pos, String traj, String level){
+    public Command Preload(String pos, String traj){
         final AutoRoutine routine = autoFactory.newRoutine(pos + " " + traj);
         final AutoTrajectory trajectory = routine.trajectory(traj);
-        Runnable setL;
-        switch (level) {
-            case "L1":
-                setL = () -> superstructure.setL1();
-                break;
-            case "L2":
-                setL = () -> superstructure.setL2();
-                break;
-            case "L3":
-                setL = () -> superstructure.setL3();
-                break;
-            case "L4":
-                setL = () -> superstructure.setL4();
-                break;
-            default:
-                throw new IllegalArgumentException("Kill Yourself " + level);
-        }
         routine.active().whileTrue(Commands.sequence(
             trajectory.resetOdometry(),
-            Commands.runOnce(setL),
+            Commands.runOnce(() -> superstructure.setL4()),
             trajectory.cmd(),
             Commands.runOnce(() -> superstructure.requestScore())
                 .alongWith(Commands.waitUntil(() -> {
@@ -69,48 +51,14 @@ public class Autos {
         return routine.cmd();
     }
 
-    public Command TwoPiece(String pos, String traj1, String traj2, String traj3, String levelA, String levelB){
+    public Command TwoPiece(String pos, String traj1, String traj2, String traj3){
         final AutoRoutine routine = autoFactory.newRoutine(pos + " " + traj1 + " " + traj2 + " " + traj3);
         final AutoTrajectory trajectory1 = routine.trajectory(traj1);
         final AutoTrajectory trajectory2 = routine.trajectory(traj2);
         final AutoTrajectory trajectory3 = routine.trajectory(traj3);
-        Runnable AsetL;
-        Runnable BsetL;
-        switch (levelA) {
-            case "L1":
-                AsetL = () -> superstructure.setL1();
-                break;
-            case "L2":
-                AsetL = () -> superstructure.setL2();
-                break;
-            case "L3":
-                AsetL = () -> superstructure.setL3();
-                break;
-            case "L4":
-                AsetL = () -> superstructure.setL4();
-                break;
-            default:
-                throw new IllegalArgumentException("Kill Yourself " + levelA);
-        }
-        switch (levelB) {
-            case "L1":
-                BsetL = () -> superstructure.setL1();
-                break;
-            case "L2":
-                BsetL = () -> superstructure.setL2();
-                break;
-            case "L3":
-                BsetL = () -> superstructure.setL3();
-                break;
-            case "L4":
-                BsetL = () -> superstructure.setL4();
-                break;
-            default:
-                throw new IllegalArgumentException("Kill Yourself " + levelB);
-        }
         routine.active().whileTrue(Commands.sequence(
             trajectory1.resetOdometry(),
-            Commands.runOnce(AsetL),
+            Commands.runOnce(() -> superstructure.setL4()),
             trajectory1.cmd(),
             Commands.runOnce(() -> superstructure.requestScore())
                 .alongWith(Commands.waitUntil(() -> {
@@ -122,7 +70,7 @@ public class Autos {
                     return superstructure.getState() == SuperstructureStates.POST_INTAKE;
                 }),
             trajectory3.cmd()
-                .alongWith(Commands.runOnce(BsetL)),
+                .alongWith(Commands.runOnce(() -> superstructure.setL4())),
             Commands.runOnce(() -> superstructure.requestScore())
                 .alongWith(Commands.waitUntil(() -> {
                     return superstructure.getState() == SuperstructureStates.IDLE;

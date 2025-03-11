@@ -105,8 +105,8 @@ public class Superstructure extends SubsystemBase {
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
                 s_funnel.requestIntake(2);
-                s_endeffector.requestIntake(intakeVoltage.get());
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > intakeTime.get()){
+                s_endeffector.requestIntake(3);
+                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 0.02 && !isBeamBroken()){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
                 break;

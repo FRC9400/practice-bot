@@ -94,17 +94,17 @@ public class Swerve extends SubsystemBase{
     OdometryThread m_OdometryThread;
     BaseStatusSignal[] m_allSignals;
 
-    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 0.77);
+    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 5.075);
     LoggedTunableNumber xkI = new LoggedTunableNumber("Choreo/X Controller kI", 0);
-    LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0.01);
+    LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0.023);
 
-    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 0.2);
+    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 3.9);
     LoggedTunableNumber ykI = new LoggedTunableNumber("Choreo/Y Controller kI", 0);
-    LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0);
+    LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0.015);
 
-    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP", 13.25);
+    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP", 3.2);
     LoggedTunableNumber thetakI = new LoggedTunableNumber("Choreo/Heading Controller kI", 0);
-    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0.09);
+    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0.007);
 
     // from swervestate class
     public Pose2d poseRaw;

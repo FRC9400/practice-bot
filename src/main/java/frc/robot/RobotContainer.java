@@ -45,7 +45,7 @@ public class RobotContainer {
     LoggedTunableNumber pivotDegrees = new LoggedTunableNumber("Container/Pivot Degrees",50);
   
     public RobotContainer() {
-    swerve.resetGyro(0); //zeroes quest as well
+    swerve.resetGyro(0);
     swerve.zeroWheels();
     swerve.setDefaultCommand(
         new TeleopSwerve(

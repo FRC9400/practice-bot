@@ -82,12 +82,12 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
-      tune_x = autos.tune("Preload I");
+      tune_x = autos.tune("Pos3toJ");
       tune_y = autos.tune("tuneY");
       tune_theta = autos.tune("tuneTheta");
-      pos1preload = autos.Preload("Position 1", "Pos1toI", "L4");
-      pos2preload = autos.Preload("Position 2", "Pos2toG", "L4");
-      pos3preload = autos.Preload("Position 3", "Pos3toE", "L4");
+      pos1preload = autos.Preload("Position 1", "Pos1toI");
+      pos2preload = autos.Preload("Position 2", "Pos2toG");
+      pos3preload = autos.Preload("Position 3", "Pos3toE");
       built = true;
     }
 
