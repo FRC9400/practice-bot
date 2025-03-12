@@ -50,6 +50,7 @@ public class Superstructure extends SubsystemBase {
         INTAKE_A,
         INTAKE_B,
         POST_INTAKE,
+        OUTTAKE,
         SCORE_A,
         SCORE_B,
         DEALGAE_A,
@@ -90,7 +91,7 @@ public class Superstructure extends SubsystemBase {
                 s_funnel.requestIdle();
                 s_endeffector.requestIdle();
                 break;
-            case INTAKE_A:
+                case INTAKE_A:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
@@ -104,9 +105,9 @@ public class Superstructure extends SubsystemBase {
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
-                s_funnel.requestIntake(2);
+                s_funnel.requestIntake(3);
                 s_endeffector.requestIntake(3);
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 0.02 && !isBeamBroken()){
+                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 1){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
                 break;
@@ -120,6 +121,15 @@ public class Superstructure extends SubsystemBase {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
+            case OUTTAKE:
+                led.requestFunnelIntakingLED();
+                s_dealgae.requestIdle();
+                s_funnel.requestIntake(-2);
+                s_elevator.requestIdle();
+                s_endeffector.requestIntake(-3);
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 3){
+                    setState(SuperstructureStates.IDLE);
+                }
             case SCORE_A:
                 led.requestScoringLED();
                 s_dealgae.requestIdle();
@@ -254,6 +264,10 @@ public class Superstructure extends SubsystemBase {
         else{
             requestDealgae();
         }
+    }
+
+    public void requestOuttake(){
+        setState(SuperstructureStates.OUTTAKE);
     }
 
     public boolean isBeamBroken(){

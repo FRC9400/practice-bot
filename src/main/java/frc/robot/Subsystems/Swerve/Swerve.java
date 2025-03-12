@@ -102,9 +102,9 @@ public class Swerve extends SubsystemBase{
     LoggedTunableNumber ykI = new LoggedTunableNumber("Choreo/Y Controller kI", 0);
     LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0.015);
 
-    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP", 3.2);
+    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP",2.13);
     LoggedTunableNumber thetakI = new LoggedTunableNumber("Choreo/Heading Controller kI", 0);
-    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0.007);
+    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0);
 
     // from swervestate class
     public Pose2d poseRaw;
@@ -495,7 +495,7 @@ public void followChoreoTraj(SwerveSample sample) {
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(
         sample.vx + new PIDController(xkP.get(), xkI.get(), xkD.get()).calculate(odometry.getPoseMeters().getX(), sample.x),
         sample.vy + new PIDController(ykP.get(), ykI.get(), ykD.get()).calculate(odometry.getPoseMeters().getY(), sample.y),
-        sample.omega + new PIDController(thetakP.get(), thetakI.get(), thetakD.get()).calculate(odometry.getPoseMeters().getRotation().getRadians(), sample.heading)
+        sample.omega + new PIDController(thetakP.get(), thetakI.get(),thetakD.get()).calculate(odometry.getPoseMeters().getRotation().getRadians(), sample.heading)
     ), odometry.getPoseMeters().getRotation()
     );
     driveRobotRelative(speeds);

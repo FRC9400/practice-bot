@@ -68,6 +68,9 @@ public class RobotContainer {
         
         driver.back()
             .onTrue(new InstantCommand(() -> swerve.resetGyro(0))); 
+
+        driver.rightTrigger()
+            .onTrue(new InstantCommand(() -> superstructure.requestOuttake()));
         
         driver.rightBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
