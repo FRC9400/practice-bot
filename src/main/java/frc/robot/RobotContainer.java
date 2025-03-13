@@ -24,6 +24,7 @@ import frc.robot.Subsystems.Funnel.FunnelIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
+import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;

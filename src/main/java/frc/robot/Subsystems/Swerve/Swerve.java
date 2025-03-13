@@ -94,17 +94,17 @@ public class Swerve extends SubsystemBase{
     OdometryThread m_OdometryThread;
     BaseStatusSignal[] m_allSignals;
 
-    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 5.075);
+    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 4.6);
     LoggedTunableNumber xkI = new LoggedTunableNumber("Choreo/X Controller kI", 0);
     LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0.023);
 
-    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 3.9);
+    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 4.205);
     LoggedTunableNumber ykI = new LoggedTunableNumber("Choreo/Y Controller kI", 0);
     LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0.015);
 
-    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP",2.13);
+    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP",3.57);
     LoggedTunableNumber thetakI = new LoggedTunableNumber("Choreo/Heading Controller kI", 0);
-    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0);
+    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0.005);
 
     // from swervestate class
     public Pose2d poseRaw;

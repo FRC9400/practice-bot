@@ -23,7 +23,7 @@ public class AutonomousSelector {
         autonomousSelector.addOption("Tune Y", modes.TUNE_Y);
         autonomousSelector.addOption("Tune Theta", modes.TUNE_THETA);
         autonomousSelector.addOption("Position 1 Preload to F", modes.POS1_PRELOAD_TO_I);
-        autonomousSelector.addOption("Position 2 Preload to I", modes.POS2_PRELOAD_TO_G);
+        autonomousSelector.addOption("Position 2 Preload to G", modes.POS2_PRELOAD_TO_G);
         autonomousSelector.addOption("Position 3 Preload to F", modes.POS3_PRELOAD_TO_E);
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }

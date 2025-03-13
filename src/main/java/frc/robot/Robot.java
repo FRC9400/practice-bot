@@ -39,6 +39,7 @@ public class Robot extends LoggedRobot {
   Command pos1preload;
   Command pos2preload;
   Command pos3preload;
+  Command timed;
 
   private AutonomousSelector selector;
 
@@ -85,9 +86,10 @@ public class Robot extends LoggedRobot {
       tune_x = autos.tune("tuneX");
       tune_y = autos.tune("tuneY");
       tune_theta = autos.tune("tuneTheta");
-      pos1preload = autos.Preload("Position 1", "Pos1toI");
+      pos1preload = autos.Preload2("Position 1", "Pos1toI");
       pos2preload = autos.Preload("Position 2", "Pos2toG");
       pos3preload = autos.Preload("Position 3", "Pos3toE");
+      timed = autos.timedMid();
       built = true;
     }
 
@@ -100,7 +102,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    
     if(selector.get() == modes.DO_NOTHING){
       m_autonomousCommand = new InstantCommand();
     }
@@ -128,9 +129,13 @@ public class Robot extends LoggedRobot {
     if(selector.get() == modes.POS3_PRELOAD_TO_E){
       m_autonomousCommand = pos3preload;
     }
+
+  //  m_autonomousCommand = timed;
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
 
   }
 
