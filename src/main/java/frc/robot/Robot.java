@@ -87,8 +87,8 @@ public class Robot extends LoggedRobot {
       tune_y = autos.tune("tuneY");
       tune_theta = autos.tune("tuneTheta");
       pos1preload = autos.Preload2("Position 1", "Pos1toI");
-      pos2preload = autos.Preload("Position 2", "Pos2toG");
-      pos3preload = autos.Preload("Position 3", "Pos3toE");
+      pos2preload = autos.Preload("Position 2", "Pos2toG");//44.5
+      pos3preload = autos.Preload2("Position 3", "Pos3toE");
       timed = autos.timedMid();
       built = true;
     }
