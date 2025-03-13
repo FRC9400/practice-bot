@@ -4,12 +4,9 @@
 
 package frc.robot;
 
-import java.util.Set;
-
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -21,7 +18,6 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.Autos;
 import frc.robot.autons.AutonomousSelector.modes;
@@ -33,13 +29,10 @@ public class Robot extends LoggedRobot {
 
   private Autos autos;
   
-  Command tune_x;
-  Command tune_y;
-  Command tune_theta;
-  Command pos1preload;
-  Command pos2preload;
-  Command pos3preload;
-  Command timed;
+  Command doNothing;
+  Command preloadMid;
+  Command preloadDealgae;
+  Command preloadCage;
 
   private AutonomousSelector selector;
 
@@ -83,13 +76,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
-      tune_x = autos.tune("tuneX");
-      tune_y = autos.tune("tuneY");
-      tune_theta = autos.tune("tuneTheta");
-      pos1preload = autos.Preload2("Position 1", "Pos1toI");
-      pos2preload = autos.Preload("Position 2", "Pos2toG");//44.5
-      pos3preload = autos.Preload2("Position 3", "Pos3toE");
-      timed = autos.timedMid();
+      doNothing = autos.none();
+      preloadMid = autos.PreloadMid();
+      preloadCage = autos.PreloadCage();
+      preloadDealgae = autos.PreloadandDealgaeMid();
       built = true;
     }
 
@@ -102,40 +92,26 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+
     if(selector.get() == modes.DO_NOTHING){
-      m_autonomousCommand = new InstantCommand();
+      m_autonomousCommand = doNothing;
     }
 
-    if(selector.get() == modes.TUNE_X){
-      m_autonomousCommand = tune_x;
+    if(selector.get() == modes.PRELOAD_MID){
+      m_autonomousCommand = preloadMid;
     }
 
-    if(selector.get() == modes.TUNE_Y){
-      m_autonomousCommand = tune_y;
+    if(selector.get() == modes.PRELOAD_CAGE){
+      m_autonomousCommand = preloadCage;
     }
 
-    if(selector.get() == modes.TUNE_THETA){
-      m_autonomousCommand = tune_theta;
+    if(selector.get() == modes.PRELOAD_DEALGAE_MID){
+      m_autonomousCommand = preloadDealgae;
     }
-
-    if(selector.get() == modes.POS1_PRELOAD_TO_I){
-      m_autonomousCommand = pos1preload;
-    }
-
-    if(selector.get() == modes.POS2_PRELOAD_TO_G){
-      m_autonomousCommand = pos2preload;
-    }
-
-    if(selector.get() == modes.POS3_PRELOAD_TO_E){
-      m_autonomousCommand = pos3preload;
-    }
-
-  //  m_autonomousCommand = timed;
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
 
   }
 

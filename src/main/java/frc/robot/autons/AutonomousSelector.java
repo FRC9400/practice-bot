@@ -9,22 +9,16 @@ public class AutonomousSelector {
     String mode;
         public enum modes{
             DO_NOTHING,
-            TUNE_X,
-            TUNE_Y,
-            TUNE_THETA,
-            POS1_PRELOAD_TO_I,
-            POS2_PRELOAD_TO_G,
-            POS3_PRELOAD_TO_E
+            PRELOAD_DEALGAE_MID,
+            PRELOAD_MID,
+            PRELOAD_CAGE
         };
     
     public AutonomousSelector(Swerve swerve, Autos autos){
         autonomousSelector.setDefaultOption("Do Nothing", modes.DO_NOTHING);
-        autonomousSelector.addOption("Tune X", modes.TUNE_X);
-        autonomousSelector.addOption("Tune Y", modes.TUNE_Y);
-        autonomousSelector.addOption("Tune Theta", modes.TUNE_THETA);
-        autonomousSelector.addOption("Position 1 Preload to F", modes.POS1_PRELOAD_TO_I);
-        autonomousSelector.addOption("Position 2 Preload to G", modes.POS2_PRELOAD_TO_G);
-        autonomousSelector.addOption("Position 3 Preload to F", modes.POS3_PRELOAD_TO_E);
+        autonomousSelector.addOption("Preload and Dealgae from Mid", modes.PRELOAD_DEALGAE_MID);
+        autonomousSelector.addOption("Preload from Mid", modes.PRELOAD_MID);
+        autonomousSelector.addOption("Preload from Cage", modes.PRELOAD_CAGE);
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 

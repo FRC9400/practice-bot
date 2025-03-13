@@ -3,7 +3,6 @@ package frc.robot.Subsystems.Elevator;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
-import frc.commons.Conversions;
 import frc.robot.Constants.elevatorConstants;
 
 public class Elevator {

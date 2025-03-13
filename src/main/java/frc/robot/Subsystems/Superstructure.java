@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.commons.LoggedTunableNumber;
 import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
 import frc.robot.Subsystems.BeamBreak.BeamBreakIOInputsAutoLogged;
 import frc.robot.Subsystems.Dealgae.Dealgae;
@@ -30,11 +29,6 @@ public class Superstructure extends SubsystemBase {
 
     private double stateStartTime = 0;
     private SuperstructureStates systemState = SuperstructureStates.IDLE;
-
-    LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/Intake POST BEAMBREAK VOLTAGE", 1);
-    LoggedTunableNumber intakeTime = new LoggedTunableNumber("Superstructure/Intake POST BEAMBREAK TIME", 0.5);
-    LoggedTunableNumber scoreVoltage = new LoggedTunableNumber("Superstructure/Score PRE BEAMBREAK Voltage", 1);
-    LoggedTunableNumber scoreTime = new LoggedTunableNumber("Superstructure/Score PRE BEAMBREAK Time", 0.5);
 
     public Superstructure(DealgaeIO dealgaeIO, ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, LEDs led, FunnelIO funnelIO, BeamBreakIO beamBreakIO){
         this.s_dealgae = new Dealgae(dealgaeIO);
@@ -137,7 +131,7 @@ public class Superstructure extends SubsystemBase {
                 s_dealgae.requestIdle();
                 s_funnel.requestIntake(-3);
                 s_elevator.requestIdle();
-                s_endeffector.requestIntake(-4);
+                s_endeffector.requestIntake(-3);
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 3){
                     setState(SuperstructureStates.IDLE);
                 }

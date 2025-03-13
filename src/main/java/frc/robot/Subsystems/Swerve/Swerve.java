@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -13,13 +12,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.GyroTrimConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import choreo.trajectory.SwerveSample;
 
@@ -33,8 +26,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -49,12 +40,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.commons.Conversions;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
-import frc.robot.autons.AutoConstants;
 
 /*
  * Changes
@@ -94,17 +83,9 @@ public class Swerve extends SubsystemBase{
     OdometryThread m_OdometryThread;
     BaseStatusSignal[] m_allSignals;
 
-    LoggedTunableNumber xkP = new LoggedTunableNumber("Choreo/X Controller kP", 4.6);
-    LoggedTunableNumber xkI = new LoggedTunableNumber("Choreo/X Controller kI", 0);
-    LoggedTunableNumber xkD = new LoggedTunableNumber("Choreo/X Controller kD", 0.023);
-
-    LoggedTunableNumber ykP = new LoggedTunableNumber("Choreo/Y Controller kP", 4.205);
-    LoggedTunableNumber ykI = new LoggedTunableNumber("Choreo/Y Controller kI", 0);
-    LoggedTunableNumber ykD = new LoggedTunableNumber("Choreo/Y Controller kD", 0.015);
-
-    LoggedTunableNumber thetakP = new LoggedTunableNumber("Choreo/Heading Controller kP",3.57);
-    LoggedTunableNumber thetakI = new LoggedTunableNumber("Choreo/Heading Controller kI", 0);
-    LoggedTunableNumber thetakD = new LoggedTunableNumber("Choreo/Heading Controller kD", 0.005);
+    private final PIDController xController = new PIDController(4.6,0,0.023);
+    private final PIDController yController = new PIDController(4.205,0,0.015);
+    private final PIDController thetaController = new PIDController(3.57,0,0.005);
 
     // from swervestate class
     public Pose2d poseRaw;
@@ -493,9 +474,9 @@ private void logModuleStates(String key, SwerveModuleState[] states) {
 
 public void followChoreoTraj(SwerveSample sample) {
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(
-        sample.vx + new PIDController(xkP.get(), xkI.get(), xkD.get()).calculate(odometry.getPoseMeters().getX(), sample.x),
-        sample.vy + new PIDController(ykP.get(), ykI.get(), ykD.get()).calculate(odometry.getPoseMeters().getY(), sample.y),
-        sample.omega + new PIDController(thetakP.get(), thetakI.get(),thetakD.get()).calculate(odometry.getPoseMeters().getRotation().getRadians(), sample.heading)
+        sample.vx + xController.calculate(odometry.getPoseMeters().getX(), sample.x),
+        sample.vy + yController.calculate(odometry.getPoseMeters().getY(), sample.y),
+        sample.omega + thetaController.calculate(odometry.getPoseMeters().getRotation().getRadians(), sample.heading)
     ), odometry.getPoseMeters().getRotation()
     );
     driveRobotRelative(speeds);

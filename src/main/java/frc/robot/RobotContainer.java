@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -21,12 +18,8 @@ import frc.robot.Subsystems.EndEffector.EndEffectorIO;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.Subsystems.Funnel.FunnelIO;
 import frc.robot.Subsystems.Funnel.FunnelIOTalonFX;
-import frc.robot.Subsystems.Intake.Intake;
-import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
-import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
-import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -38,12 +31,9 @@ public class RobotContainer {
     private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
     private final LEDs s_leds = new LEDs();
     private final FunnelIO s_funnel = new FunnelIOTalonFX();
-    //private final Intake intake = new Intake(new IntakeIOTalonFX());
     private final BeamBreakIO beamBreak = new BeamBreakIOAdafruit(6, true);
     private final Superstructure superstructure = new Superstructure(s_dealgae, s_elevator, s_endeffector, s_leds, s_funnel, beamBreak);
     private final Swerve swerve = new Swerve();
-
-    LoggedTunableNumber pivotDegrees = new LoggedTunableNumber("Container/Pivot Degrees",50);
   
     public RobotContainer() {
     swerve.resetGyro(0);
@@ -99,12 +89,6 @@ public class RobotContainer {
 
         operator.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
-        
-        /*driver.x()
-            .onTrue(intake.runSysIdCmd());
-        
-        driver.y()
-            .onTrue(new InstantCommand(() -> intake.requestMotionMagic(pivotDegrees.get())));*/
         
     }
 

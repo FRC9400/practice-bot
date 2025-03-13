@@ -21,7 +21,7 @@ public final class swerveConstants {
         public static final double steerGearRatio = 150.0 / 7.0;
 
         /* Max Speeds */
-        public static final double maxSpeedMeterPerSecond = Units.feetToMeters(20); 
+        public static final double maxSpeedMeterPerSecond = Units.feetToMeters(16); 
         public static final double maxAngularVelocity = 4;
         
         /* Current Limits */
