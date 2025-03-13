@@ -95,7 +95,7 @@ public class Superstructure extends SubsystemBase {
             case INTAKE_A:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
-                s_elevator.requestIdle();
+                s_elevator.requestIntake();
                 s_funnel.requestIntake(3);
                 s_endeffector.requestIntake(4);
                 if (RobotController.getFPGATime() / 1.056 - stateStartTime > 0.5 && isBeamBroken()){
@@ -105,9 +105,9 @@ public class Superstructure extends SubsystemBase {
             case INTAKE_B:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
-                s_elevator.requestIdle();
+                s_elevator.requestIntake();
                 s_funnel.requestIntake(1);
-                s_endeffector.requestIntake(2);
+                s_endeffector.requestIntake(1);
                 if (!isBeamBroken()){
                     setState(SuperstructureStates.INTAKE_C);
                 }
@@ -115,10 +115,10 @@ public class Superstructure extends SubsystemBase {
             case INTAKE_C:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
-                s_elevator.requestIdle();
+                s_elevator.requestIntake();
                 s_funnel.requestIdle();
-                s_endeffector.requestIntake(-3);
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 1){
+                s_endeffector.requestIntake(-1);
+                if (isBeamBroken()){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
                 break;

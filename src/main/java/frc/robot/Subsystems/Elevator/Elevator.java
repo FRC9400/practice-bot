@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Elevator;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
+import frc.commons.Conversions;
 import frc.robot.Constants.elevatorConstants;
 
 public class Elevator {
@@ -78,6 +79,11 @@ public class Elevator {
 
     public void requestElevatorDown(){
         elevatorSetpoint = 0;
+        setState(ElevatorStates.SETPOINT);
+    }
+
+    public void requestIntake(){
+        elevatorSetpoint = 0.005;
         setState(ElevatorStates.SETPOINT);
     }
 
