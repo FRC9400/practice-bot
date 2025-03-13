@@ -70,19 +70,22 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> swerve.resetGyro(0))); 
 
         driver.rightTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.requestOuttake()));
+            .onTrue(new InstantCommand(() -> superstructure.requestProcessor()));
         
         driver.rightBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestElevatorDown()));
         
         driver.leftBumper()
-            .onTrue(new InstantCommand(() -> superstructure.executePurple()));
+            .onTrue(new InstantCommand(() -> superstructure.requestScore()));
         
         driver.leftTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.executeGreen()));
+            .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
 
-        operator.rightTrigger()
-            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
+        operator.rightBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
+
+        operator.leftBumper()
+            .onTrue(new InstantCommand(() -> superstructure.requestOuttake()));
 
         operator.x()
             .onTrue(new InstantCommand(() -> superstructure.setL1()));

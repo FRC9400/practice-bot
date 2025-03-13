@@ -49,6 +49,7 @@ public class Superstructure extends SubsystemBase {
         IDLE,
         INTAKE_A,
         INTAKE_B,
+        INTAKE_C,
         POST_INTAKE,
         OUTTAKE,
         SCORE_A,
@@ -91,7 +92,7 @@ public class Superstructure extends SubsystemBase {
                 s_funnel.requestIdle();
                 s_endeffector.requestIdle();
                 break;
-                case INTAKE_A:
+            case INTAKE_A:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
@@ -105,8 +106,18 @@ public class Superstructure extends SubsystemBase {
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
-                s_funnel.requestIntake(3);
-                s_endeffector.requestIntake(3);
+                s_funnel.requestIntake(1);
+                s_endeffector.requestIntake(2);
+                if (!isBeamBroken()){
+                    setState(SuperstructureStates.INTAKE_C);
+                }
+                break;
+            case INTAKE_C:
+                led.requestFunnelIntakingLED();
+                s_dealgae.requestIdle();
+                s_elevator.requestIdle();
+                s_funnel.requestIdle();
+                s_endeffector.requestIntake(-3);
                 if (RobotController.getFPGATime() / 1.056 - stateStartTime > 1){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
@@ -124,9 +135,9 @@ public class Superstructure extends SubsystemBase {
             case OUTTAKE:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
-                s_funnel.requestIntake(-2);
+                s_funnel.requestIntake(-3);
                 s_elevator.requestIdle();
-                s_endeffector.requestIntake(-3);
+                s_endeffector.requestIntake(-4);
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 3){
                     setState(SuperstructureStates.IDLE);
                 }
@@ -245,25 +256,6 @@ public class Superstructure extends SubsystemBase {
 
     public void setL4(){
         s_elevator.setHeight("L4");
-    }
-
-
-    public void executePurple(){
-        if(s_elevator.selectedHeight == "L1"){
-            requestIntake();
-        }
-        else{
-            requestScore();
-        }
-    }
-
-    public void executeGreen(){
-        if(s_elevator.selectedHeight == "L1"){
-            requestProcessor();
-        }
-        else{
-            requestDealgae();
-        }
     }
 
     public void requestOuttake(){
