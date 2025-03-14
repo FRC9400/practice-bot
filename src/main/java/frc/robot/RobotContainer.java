@@ -19,7 +19,9 @@ import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.Subsystems.Funnel.FunnelIO;
 import frc.robot.Subsystems.Funnel.FunnelIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
+import frc.robot.Subsystems.Swerve.FeedDriveAssist;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Subsystems.Swerve.Swerve.FeedingStation;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -72,6 +74,8 @@ public class RobotContainer {
         driver.leftTrigger()
             .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
 
+        driver.a().whileTrue(new FeedDriveAssist(swerve));
+
         operator.rightBumper()
             .onTrue(new InstantCommand(() -> superstructure.requestIntake()));
 
@@ -89,6 +93,8 @@ public class RobotContainer {
 
         operator.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
+        operator.leftTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(FeedingStation.LEFT)));
+        operator.rightTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(FeedingStation.RIGHT)));
         
     }
 
@@ -99,5 +105,7 @@ public class RobotContainer {
     public Superstructure getSuperstructure(){
         return superstructure;
     }
+    
+    
 
 }

@@ -63,6 +63,11 @@ import frc.robot.Constants.swerveConstants.kinematicsConstants;
  */
 
 public class Swerve extends SubsystemBase{
+    public enum FeedingStation{
+        LEFT,
+        RIGHT
+    }
+    public static FeedingStation feed = FeedingStation.LEFT;
     SwerveDrivePoseEstimator poseEstimator;
     ProfiledPIDController controller = new ProfiledPIDController(0, 0, 0, null); //create pose constants
     Matrix<N3, N1> visionSTDevs = VecBuilder.fill(0, 0,0); //
@@ -266,6 +271,7 @@ public void periodic(){
     Logger.recordOutput("Odometry/PoseRaw", odometry.getPoseMeters());
     Logger.recordOutput("Swerve/SuccessfulDaqs", SuccessfulDaqs);
     Logger.recordOutput("Swerve/FailedDaqs", FailedDaqs);
+    Logger.recordOutput("Feeding Station", feed);
 
 }
 public void requestDesiredState(double x_speed, double y_speed, double rot_speed, boolean fieldRelative, boolean isOpenLoop){
@@ -313,6 +319,9 @@ public void requestDesiredState(double x_speed, double y_speed, double rot_speed
         }
     }
     
+}
+public void setFeed(FeedingStation feed){
+    this.feed = feed;
 }
 
 /* 
