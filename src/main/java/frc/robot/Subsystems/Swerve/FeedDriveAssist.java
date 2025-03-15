@@ -20,11 +20,11 @@ public class FeedDriveAssist  extends Command{
     public FeedDriveAssist(Swerve swerve){
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.swerve = swerve;
-        if(Swerve.feed == FeedingStation.LEFT ){
+        if(swerve.getFeed() == FeedingStation.LEFT ){
             headingGoal = new Rotation2d(-0.950546223291815 );
         }
         else{
-            headingGoal = new Rotation2d(-0.9097530329624376);
+            headingGoal = new Rotation2d(0.9097530329624376);
         }
         addRequirements(swerve);
     }
@@ -49,7 +49,7 @@ public class FeedDriveAssist  extends Command{
         );
         thetaFeedback = MathUtil.clamp(thetaFeedback, -5, 5);
 
-        swerve.requestDesiredState(dx * 4.72/3, dy * 4.72/3, thetaFeedback, true, false);
+        swerve.requestDesiredState(dx * 4.72/2, dy * 4.72/2, thetaFeedback, true, false);
 
     }
 
