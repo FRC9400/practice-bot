@@ -36,7 +36,7 @@ public class Autos {
 
         routine.active().whileTrue(Commands.sequence(
             trajectory.resetOdometry(),
-            Commands.runOnce(() -> superstructure.setL4()),
+            Commands.runOnce(() -> superstructure.setL4())
             trajectory.cmd(),
             Commands.runOnce(() -> superstructure.requestScore())
                 .alongWith(Commands.waitUntil(() -> {
