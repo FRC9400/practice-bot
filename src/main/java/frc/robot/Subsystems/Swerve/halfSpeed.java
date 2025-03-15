@@ -12,20 +12,11 @@ import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve.FeedingStation;
 
-public class FeedDriveAssist  extends Command{
+public class halfSpeed  extends Command{
     private final Swerve swerve;
-    private final PIDController thetaController = new PIDController(5, 0, 0);
-    private Rotation2d headingGoal;
     
-    public FeedDriveAssist(Swerve swerve){
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    public halfSpeed(Swerve swerve){
         this.swerve = swerve;
-        if(Swerve.feed == FeedingStation.LEFT ){
-            headingGoal = new Rotation2d(-0.950546223291815 );
-        }
-        else{
-            headingGoal = new Rotation2d(-0.9097530329624376);
-        }
         addRequirements(swerve);
     }
 
@@ -37,19 +28,16 @@ public class FeedDriveAssist  extends Command{
     public void execute(){
         double x = Math.pow(MathUtil.applyDeadband(RobotContainer.driver.getLeftY(), 0.1), 3);
         double y = Math.pow(MathUtil.applyDeadband(RobotContainer.driver.getLeftX(), 0.1),3);
+        double theta = Math.pow(MathUtil.applyDeadband(RobotContainer.driver.getRightX(), 0.1),3);
         double dx;
         double dy;
+        double dtheta;
 
         dx = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? x * -1 : x;
         dy =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? y * -1: y;
-       
-        double thetaFeedback = thetaController.calculate(
-            swerve.getPoseRaw().getRotation().getRadians(),
-            headingGoal.getRadians()
-        );
-        thetaFeedback = MathUtil.clamp(thetaFeedback, -5, 5);
+        dtheta =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? theta * -1: theta;
 
-        swerve.requestDesiredState(dx * 4.72/3, dy * 4.72/3, thetaFeedback, true, false);
+        swerve.requestDesiredState(dx * 4.72/2, dy * 4.72/2, dtheta*4, true, false);
 
     }
 
