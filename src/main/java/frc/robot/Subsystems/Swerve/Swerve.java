@@ -67,6 +67,7 @@ public class Swerve extends SubsystemBase{
         LEFT,
         RIGHT
     }
+    boolean feedStation = true;
     public FeedingStation feed = FeedingStation.LEFT;
     SwerveDrivePoseEstimator poseEstimator;
     ProfiledPIDController controller = new ProfiledPIDController(0, 0, 0, null); //create pose constants
@@ -320,8 +321,13 @@ public void requestDesiredState(double x_speed, double y_speed, double rot_speed
     }
     
 }
-public void setFeed(FeedingStation feed){
-    this.feed = feed;
+public void setFeed(boolean left){
+    if(left){
+        this.feed = FeedingStation.LEFT;
+    }
+    else{
+        this.feed = FeedingStation.RIGHT;
+    }
 }
 
 public FeedingStation getFeed(){
@@ -379,6 +385,12 @@ public void resetGyro(double yawDeg){
     pigeon.setYaw(yawDeg);
     odometry.resetRotation(new Rotation2d(yawDeg * Math.PI/180.0));
     questNav.zeroHeading();
+}
+public void resetRotation(){
+    odometry.resetRotation(new Rotation2d(0));
+}
+public void resetRotation(Rotation2d rot){
+    odometry.resetRotation(rot);
 }
 
 public void resetPoseEstimator(Pose2d pose){

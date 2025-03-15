@@ -33,6 +33,7 @@ public class Robot extends LoggedRobot {
   Command preloadMid;
   Command preloadDealgae;
   Command preloadCage;
+  Command leave;
 
   private AutonomousSelector selector;
 
@@ -80,6 +81,7 @@ public class Robot extends LoggedRobot {
       preloadMid = autos.PreloadMid();
       preloadCage = autos.PreloadCage();
       preloadDealgae = autos.PreloadandDealgaeMid();
+      leave = autos.Leave();
       built = true;
     }
 
@@ -107,6 +109,10 @@ public class Robot extends LoggedRobot {
 
     if(selector.get() == modes.PRELOAD_DEALGAE_MID){
       m_autonomousCommand = preloadDealgae;
+    }
+
+    if(selector.get() == modes.LEAVE){
+      m_autonomousCommand = leave;
     }
 
     if (m_autonomousCommand != null) {

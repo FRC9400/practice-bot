@@ -50,8 +50,9 @@ public class RobotContainer {
             () -> -driver.getRawAxis(XboxController.Axis.kRightX.value)
           
         )
+   
     );
-
+    swerve.resetRotation();
     configureBindings();
 
     }
@@ -97,8 +98,8 @@ public class RobotContainer {
 
         operator.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
-        operator.leftTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(FeedingStation.LEFT)));
-        operator.rightTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(FeedingStation.RIGHT)));
+        operator.leftTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(true)));
+        operator.rightTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(false)));
         
     }
 

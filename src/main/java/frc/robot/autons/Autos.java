@@ -3,6 +3,7 @@ package frc.robot.autons;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,6 +33,7 @@ public class Autos {
     public Command PreloadandDealgaeMid(){
         final AutoRoutine routine = autoFactory.newRoutine("Preload and Dealgae from Mid");
         final AutoTrajectory trajectory = routine.trajectory("MidtoG");
+
         routine.active().whileTrue(Commands.sequence(
             trajectory.resetOdometry(),
             Commands.runOnce(() -> superstructure.setL4()),
@@ -73,6 +75,13 @@ public class Autos {
                     return superstructure.getState() == SuperstructureStates.IDLE;
                 })).raceWith(Commands.run(() -> swerve.requestDesiredState(0, 0, 0, false, false))))
         );
+        return routine.cmd();
+    }
+
+    public Command Leave(){
+        final AutoRoutine routine = autoFactory.newRoutine("Leave");
+        final AutoTrajectory trajectory = routine.trajectory("Leave");
+        routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd()));
         return routine.cmd();
     }
 

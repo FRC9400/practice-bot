@@ -20,7 +20,7 @@ public class FeedDriveAssist  extends Command{
     public FeedDriveAssist(Swerve swerve){
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.swerve = swerve;
-        if(swerve.getFeed() == FeedingStation.LEFT ){
+        if(swerve.getFeed().equals(FeedingStation.LEFT) ){
             headingGoal = new Rotation2d(-0.950546223291815 );
         }
         else{

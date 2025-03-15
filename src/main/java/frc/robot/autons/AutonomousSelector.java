@@ -11,7 +11,8 @@ public class AutonomousSelector {
             DO_NOTHING,
             PRELOAD_DEALGAE_MID,
             PRELOAD_MID,
-            PRELOAD_CAGE
+            PRELOAD_CAGE,
+            LEAVE
         };
     
     public AutonomousSelector(Swerve swerve, Autos autos){
@@ -19,6 +20,7 @@ public class AutonomousSelector {
         autonomousSelector.addOption("Preload and Dealgae from Mid", modes.PRELOAD_DEALGAE_MID);
         autonomousSelector.addOption("Preload from Mid", modes.PRELOAD_MID);
         autonomousSelector.addOption("Preload from Cage", modes.PRELOAD_CAGE);
+        autonomousSelector.addOption("Leave", modes.LEAVE);
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 
