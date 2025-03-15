@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
-import frc.robot.Subsystems.Swerve.Swerve.FeedingStation;
 
 public class halfSpeed  extends Command{
     private final Swerve swerve;

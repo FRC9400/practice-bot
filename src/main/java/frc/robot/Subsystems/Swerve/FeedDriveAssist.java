@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
-import frc.robot.Subsystems.Swerve.Swerve.FeedingStation;
+
 
 public class FeedDriveAssist  extends Command{
     private final Swerve swerve;
@@ -20,7 +20,7 @@ public class FeedDriveAssist  extends Command{
     public FeedDriveAssist(Swerve swerve){
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.swerve = swerve;
-        if(swerve.getFeed().equals(FeedingStation.LEFT) ){
+        if(swerve.getFeed()){
             headingGoal = new Rotation2d(-0.950546223291815 );
         }
         else{
