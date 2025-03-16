@@ -97,6 +97,10 @@ public class RobotContainer {
 
         operator.b()
             .onTrue(new InstantCommand(() -> superstructure.setL4()));
+
+        operator.start()
+            .onTrue(new InstantCommand(() -> superstructure.requestPulseIntake()));
+        
         operator.leftTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(true)));
         operator.rightTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(false)));
         
