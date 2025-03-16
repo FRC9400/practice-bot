@@ -39,7 +39,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
   
     public RobotContainer() {
-    swerve.resetGyro(0);
+    swerve.zeroGyro();
     swerve.zeroWheels();
     swerve.setDefaultCommand(
         new TeleopSwerve(
@@ -51,7 +51,6 @@ public class RobotContainer {
         )
    
     );
-    swerve.resetRotation();
     configureBindings();
 
     }
@@ -62,7 +61,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
         
         driver.back()
-            .onTrue(new InstantCommand(() -> swerve.resetGyro(0))); 
+            .onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
 
         driver.rightTrigger()
             .onTrue(new InstantCommand(() -> superstructure.requestProcessor()));

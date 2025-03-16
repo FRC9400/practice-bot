@@ -82,7 +82,7 @@ public class Elevator {
     }
 
     public void requestIntake(){
-        elevatorSetpoint = 0.005;
+        elevatorSetpoint = 0;
         setState(ElevatorStates.SETPOINT);
     }
 
