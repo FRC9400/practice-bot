@@ -23,5 +23,5 @@ public interface ElevatorIO {
 
     public default void requestMotionMagic(double meters){}
 
-    public default void zeroSensor(){}    
+    public default void zeroSensor(double newValue){}    
 }

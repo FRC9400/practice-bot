@@ -4,6 +4,8 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,8 +20,8 @@ public class Autos {
 
     public Autos(Swerve swerve, Superstructure superstructure){
         this.swerve = swerve;
-        this.superstructure = superstructure;
-        autoFactory = new AutoFactory(
+    this.superstructure = superstructure;
+    autoFactory = new AutoFactory(
             swerve::getPoseRaw,
             swerve::resetPose,
             swerve::followChoreoTraj,
@@ -35,7 +37,7 @@ public class Autos {
         final AutoTrajectory trajectory = routine.trajectory("MidtoG");
 
         routine.active().whileTrue(Commands.sequence(
-            trajectory.resetOdometry(),
+            trajectory.resetOdometry(),       
             Commands.runOnce(() -> superstructure.setL4()),
             trajectory.cmd(),
             Commands.runOnce(() -> superstructure.requestScore())
@@ -80,8 +82,8 @@ public class Autos {
 
     public Command Leave(){
         final AutoRoutine routine = autoFactory.newRoutine("Leave");
-        final AutoTrajectory trajectory = routine.trajectory("Leave");
-        routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd()));
+        final AutoTrajectory trajectory = routine.trajectory("MidtoG");
+        routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd(), Commands.runOnce(() -> superstructure.setL4())));
         return routine.cmd();
     }
 

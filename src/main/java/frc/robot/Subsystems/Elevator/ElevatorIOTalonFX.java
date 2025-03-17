@@ -86,7 +86,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         /* Motion Magic Configuration */
         leftConfigs.MotionMagic.MotionMagicCruiseVelocity = 300;
         leftConfigs.MotionMagic.MotionMagicAcceleration = 450;
-        leftConfigs.MotionMagic.MotionMagicJerk = 30000;
+        leftConfigs.MotionMagic.MotionMagicJerk = 10000;
 
         /* Slot 0 Configuration */
         leftConfigs.Slot0.kP = 2;
@@ -159,7 +159,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         leftMotor.setControl(motionMagicRequest.withPosition(Conversions.metersToRotations(meters, elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio)));
     }
 
-    public void zeroSensor(){
-        leftMotor.setPosition(0);
+    public void zeroSensor(double newValue){
+        leftMotor.setPosition(newValue);
     }
 }

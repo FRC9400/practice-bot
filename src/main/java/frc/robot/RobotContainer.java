@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
 import frc.robot.Subsystems.BeamBreak.BeamBreakIOAdafruit;
 import frc.robot.Subsystems.Dealgae.DealgaeIO;
@@ -76,6 +77,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> superstructure.requestDealgae()));
 
         driver.a().whileTrue(new FeedDriveAssist(swerve));
+        
 
         driver.x().whileTrue(new halfSpeed(swerve));
 
@@ -99,6 +101,9 @@ public class RobotContainer {
 
         operator.start()
             .onTrue(new InstantCommand(() -> superstructure.requestPulseIntake()));
+
+        operator.back()
+            .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
         
         operator.leftTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(true)));
         operator.rightTrigger().onTrue(new InstantCommand(() -> swerve.setFeed(false)));

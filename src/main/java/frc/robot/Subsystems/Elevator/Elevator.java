@@ -38,7 +38,7 @@ public class Elevator {
                 elevatorIO.requestMotionMagic(elevatorSetpoint);
                 break;
             case ZERO_SENSOR:
-                elevatorIO.zeroSensor();
+                elevatorIO.zeroSensor(0);
                 break;
             default:
                 break;
@@ -82,7 +82,7 @@ public class Elevator {
     }
 
     public void requestIntake(){
-        elevatorSetpoint = 0;
+        elevatorSetpoint = 0.0148;
         setState(ElevatorStates.SETPOINT);
     }
 
@@ -99,7 +99,7 @@ public class Elevator {
     }
 
     public boolean atSetpoint(){
-        return Math.abs(inputs.elevatorHeightMeters - elevatorSetpoint) < Units.inchesToMeters(0.5);
+        return Math.abs(inputs.elevatorHeightMeters - elevatorSetpoint) < Units.inchesToMeters(1);
     }
 
     public void setState(ElevatorStates nextState){
