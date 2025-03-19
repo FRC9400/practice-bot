@@ -215,6 +215,7 @@ public class Swerve extends SubsystemBase{
     }
 
     public void resetPose(Pose2d pose){
+        setGyroStartingPosition(pose.getRotation().getDegrees());
         odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
         poseRaw = pose;
     }
