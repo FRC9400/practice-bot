@@ -60,6 +60,7 @@ public class Elevator {
         } else {
             return;
         }
+        elevatorIO.resetMotionMagicConfigs(false);
         setState(ElevatorStates.SETPOINT);
     }
 
@@ -69,6 +70,7 @@ public class Elevator {
         } else if (selectedHeight == "L3"){
             elevatorSetpoint = elevatorConstants.L3Algae;
         } 
+        elevatorIO.resetMotionMagicConfigs(false);
         setState(ElevatorStates.SETPOINT);
     }
 
@@ -78,11 +80,7 @@ public class Elevator {
 
     public void requestElevatorDown(){
         elevatorSetpoint = 0;
-        setState(ElevatorStates.SETPOINT);
-    }
-
-    public void requestIntake(){
-        elevatorSetpoint = 0.0148;
+        elevatorIO.resetMotionMagicConfigs(true);
         setState(ElevatorStates.SETPOINT);
     }
 
@@ -99,7 +97,7 @@ public class Elevator {
     }
 
     public boolean atSetpoint(){
-        return Math.abs(inputs.elevatorHeightMeters - elevatorSetpoint) < Units.inchesToMeters(1);
+        return Math.abs(inputs.elevatorHeightMeters - elevatorSetpoint) < Units.inchesToMeters(0.3);
     }
 
     public void setState(ElevatorStates nextState){

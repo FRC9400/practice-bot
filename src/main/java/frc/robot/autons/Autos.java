@@ -3,6 +3,7 @@ package frc.robot.autons;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -31,12 +32,13 @@ public class Autos {
     public AutoFactory getFactory() {
             return autoFactory;
         }
-
+    
     public Command PreloadandDealgaeMid(){
         final AutoRoutine routine = autoFactory.newRoutine("Preload and Dealgae from Mid");
         final AutoTrajectory trajectory = routine.trajectory("MidtoG");
-
+       
         routine.active().whileTrue(Commands.sequence(
+            new InstantCommand(() -> swerve.setGyroStartingPosition(trajectory.getInitialPose().isPresent() ? trajectory.getInitialPose().get().getRotation().getDegrees() : 0)),
             trajectory.resetOdometry(),       
             Commands.runOnce(() -> superstructure.setL4()),
             trajectory.cmd(),

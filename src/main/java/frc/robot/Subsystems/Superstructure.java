@@ -54,11 +54,10 @@ public class Superstructure extends SubsystemBase {
         DEALGAE_A,
         DEALGAE_B,
         DEALGAED,
+        HOLD_ALGAE,
         PROCESSOR,
         ELEVATOR_DOWN,
         PUSLSE_INTAKE,
-        PREDEALGAE,
-        PRESCORE
     }
 
     @Override
@@ -91,24 +90,6 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestIdle();
                 s_funnel.requestIdle();
                 s_endeffector.requestIdle();
-                break;
-            case PREDEALGAE:
-                s_dealgae.requestIdle();
-                s_elevator.zeroSensor();
-                s_funnel.requestIdle();
-                s_endeffector.requestIdle();
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 0.1){
-                    setState(SuperstructureStates.DEALGAE_A);
-                }
-                break;
-            case PRESCORE:
-                s_dealgae.requestIdle();
-                s_elevator.zeroSensor();
-                s_funnel.requestIdle();
-                s_endeffector.requestIdle();
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 0.1){
-                setState(SuperstructureStates.SCORE_A);
-                }
                 break;
             case INTAKE_A:
                 led.requestFunnelIntakingLED();
@@ -200,9 +181,16 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestElevatorDown();
                 s_endeffector.requestIdle();
                 if (s_elevator.atSetpoint()){
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.HOLD_ALGAE);
                 }
                 break;
+            case HOLD_ALGAE:
+                led.requestDealgaedLED();
+                s_dealgae.requestIdle();
+                s_elevator.requestIdle();
+                s_endeffector.requestHoldAlgae(0.5);
+                break;
+                
             case PROCESSOR:
                 led.requestProcessingLED();
                 s_dealgae.requestProcessor(-3);
@@ -248,7 +236,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void requestScore(){
-        setState(SuperstructureStates.PRESCORE);
+        setState(SuperstructureStates.SCORE_A);
     }
 
     public void requestIntake(){
@@ -257,7 +245,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void requestDealgae(){
-        setState(SuperstructureStates.PREDEALGAE);
+        setState(SuperstructureStates.DEALGAE_A);
     }
     
     public void requestProcessor(){

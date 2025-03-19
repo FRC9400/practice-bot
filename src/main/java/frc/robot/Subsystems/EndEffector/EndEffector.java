@@ -11,7 +11,8 @@ public class EndEffector {
     public enum EndEffectorStates{
         IDLE,
         INTAKE,
-        SCORE
+        SCORE,
+        HOLD_ALGAE
     }
 
     public EndEffector(EndEffectorIO endEffectorIO){
@@ -31,6 +32,8 @@ public class EndEffector {
                 break;
             case SCORE:
                 endEffectorIO.requestVoltage(voltageSetpoint);
+            case HOLD_ALGAE:
+                endEffectorIO.requestVoltage(voltageSetpoint);
             default:
                 break;
         }
@@ -48,6 +51,11 @@ public class EndEffector {
     public void requestScore(double volts){
         voltageSetpoint = volts;
         setState(EndEffectorStates.SCORE);
+    }
+
+    public void requestHoldAlgae(double volts){
+        voltageSetpoint = volts;
+        setState(EndEffectorStates.HOLD_ALGAE);
     }
 
     public double getEndEffectorCurrent(){

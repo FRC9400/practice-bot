@@ -1,7 +1,10 @@
 package frc.robot.Subsystems.Elevator;
 
+import java.util.Queue;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -9,6 +12,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -95,10 +99,11 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         leftConfigs.Slot0.kV = 0;
         leftConfigs.Slot0.kG = 0.464;
         leftConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
-
+        
+        leftMotor.setPosition(Conversions.metersToRotations(Units.inchesToMeters(0), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio));
         /* Configure Right Motor: Follower */
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), false));
-
+        
         /* Configure Configs */
         leftMotor.getConfigurator().apply(leftConfigs);
         rightMotor.getConfigurator().apply(rightConfigs);
@@ -161,5 +166,19 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     public void zeroSensor(double newValue){
         leftMotor.setPosition(newValue);
+    }
+
+    public void resetMotionMagicConfigs(boolean down){
+        MotionMagicConfigs configs  = new MotionMagicConfigs();
+        if(down){
+            configs.MotionMagicCruiseVelocity = 60;
+            configs.MotionMagicAcceleration = 120;
+            configs.MotionMagicJerk = 10000;
+        }else{
+            configs.MotionMagicCruiseVelocity = 300;
+            configs.MotionMagicAcceleration = 450;
+           configs.MotionMagicJerk = 10000;
+        }
+        leftMotor.getConfigurator().apply(configs);
     }
 }
