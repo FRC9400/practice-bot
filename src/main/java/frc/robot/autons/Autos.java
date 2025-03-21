@@ -40,14 +40,14 @@ public class Autos {
         routine.active().whileTrue(Commands.sequence(
             new InstantCommand(() -> swerve.setGyroStartingPosition(trajectory.getInitialPose().isPresent() ? trajectory.getInitialPose().get().getRotation().getDegrees() : 0)),
             trajectory.resetOdometry(),       
-            Commands.runOnce(() -> superstructure.setL4()),
+            //Commands.runOnce(() -> superstructure.setL4()),
             trajectory.cmd(),
-            Commands.runOnce(() -> superstructure.requestScore())
+            /*Commands.runOnce(() -> superstructure.requestScore())
                 .alongWith(Commands.waitUntil(() -> {
                     return superstructure.getState() == SuperstructureStates.IDLE;
-                })).raceWith(Commands.run(() -> swerve.requestDesiredState(0, 0, 0, false, false))), 
-                routine.trajectory("GAlgae").cmd().alongWith(Commands.runOnce(() -> superstructure.setL2()),
-                Commands.runOnce(() -> superstructure.requestDealgae())))
+                })).raceWith(Commands.run(() -> swerve.requestDesiredState(0, 0, 0, false, false))), */
+                routine.trajectory("GAlgae").cmd().alongWith(Commands.runOnce(() -> superstructure.setL2())
+                /*Commands.runOnce(() -> superstructure.requestDealgae())*/))
         );
         return routine.cmd();
     }

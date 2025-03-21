@@ -40,6 +40,7 @@ public class GyroIOPigeon2 implements GyroIO {
         inputs.connected = true;
         inputs.positionDegRaw = positionDegRaw.getValueAsDouble();
         inputs.positionRad = Units.degreesToRadians(positionDegRaw.getValueAsDouble());
+        inputs.positionDegRawAbsolute = positionDegRaw.getValueAsDouble() % 360 ;
         inputs.velocityRadPerSec = 0.0;
         inputs.pitchDeg = pitchDeg.getValueAsDouble();
         inputs.rollDeg = rollDeg.getValueAsDouble();

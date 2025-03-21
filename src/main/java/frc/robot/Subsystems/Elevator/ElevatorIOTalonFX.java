@@ -100,7 +100,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         leftConfigs.Slot0.kG = 0.464;
         leftConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
         
-        leftMotor.setPosition(Conversions.metersToRotations(Units.inchesToMeters(0), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio));
+        leftMotor.setPosition(Conversions.metersToRotations(Units.inchesToMeters(1), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio));
         /* Configure Right Motor: Follower */
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), false));
         

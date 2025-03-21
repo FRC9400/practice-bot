@@ -55,6 +55,7 @@ public class Superstructure extends SubsystemBase {
         DEALGAE_B,
         DEALGAED,
         HOLD_ALGAE,
+        HOLD_CORAL,
         PROCESSOR,
         ELEVATOR_DOWN,
         PUSLSE_INTAKE,
@@ -97,7 +98,7 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestIdle();
                 s_funnel.requestIntake(2.5);
                 s_endeffector.requestIntake(4.5);
-                if (RobotController.getFPGATime() / 1.056 - stateStartTime > 0.5 && isBeamBroken()){
+                if (isBeamBroken()){
                     setState(SuperstructureStates.INTAKE_B);
                 }
                 break;
@@ -127,10 +128,11 @@ public class Superstructure extends SubsystemBase {
                 s_funnel.requestIdle();
                 s_elevator.requestIdle();
                 s_endeffector.requestIdle();
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1){
-                    setState(SuperstructureStates.IDLE);
+                if (!isBeamBroken()){
+                    setState(SuperstructureStates.INTAKE_C);
                 }
                 break;
+       
             case OUTTAKE:
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
