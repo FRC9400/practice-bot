@@ -54,7 +54,7 @@ public class LEDs {
 
         /* CANdle Configuration */
         CANdleConfigs.stripType = LEDStripType.GRB;
-        CANdleConfigs.brightnessScalar = 0.2;
+        CANdleConfigs.brightnessScalar = 0.5;
         CANdle.configAllSettings(CANdleConfigs);
 
         onDuration = 0;
@@ -67,7 +67,7 @@ public class LEDs {
         switch(LEDstate){
             case DISABLED:
                 color = Color.kCrimson;
-                blinkPattern = BlinkPattern.BLINK_SLOW;
+                blinkPattern = BlinkPattern.SOLID;
                 break;
             case IDLE:
                 color = Color.kWhite;
@@ -115,26 +115,30 @@ public class LEDs {
     }
 
     public void applyBlinkPattern() {
+        double time = blinkTimer.get();
         if (blinkPattern == BlinkPattern.SOLID) {
             CANdle.setLEDs(color8bit.red, color8bit.green, color8bit.blue);
-            return;
-        } 
-        double time = blinkTimer.get();
-    
-        if (blinkPattern == BlinkPattern.BLINK_FAST) {
+        }
+        else if (blinkPattern == BlinkPattern.BLINK_FAST) {
             onDuration = 0.08;
             offDuration = 0.16;
+            if (time >= onDuration + offDuration) {
+                blinkTimer.reset();
+            } else if (time >= onDuration) {
+                CANdle.setLEDs(0, 0, 0);
+            } else {
+                CANdle.setLEDs(color8bit.red, color8bit.green, color8bit.blue);
+            }
         } else if (blinkPattern == BlinkPattern.BLINK_SLOW) {
             onDuration = 0.25;
             offDuration = 0.50;
-        }
-    
-        if (time >= onDuration + offDuration) {
-            blinkTimer.reset();
-        } else if (time >= onDuration) {
-            CANdle.setLEDs(0, 0, 0);
-        } else {
-            CANdle.setLEDs(color8bit.red, color8bit.green, color8bit.blue);
+            if (time >= onDuration + offDuration) {
+                blinkTimer.reset();
+            } else if (time >= onDuration) {
+                CANdle.setLEDs(0, 0, 0);
+            } else {
+                CANdle.setLEDs(color8bit.red, color8bit.green, color8bit.blue);
+            }
         }
     }
 

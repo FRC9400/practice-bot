@@ -171,9 +171,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     public void resetMotionMagicConfigs(boolean down){
         MotionMagicConfigs configs  = new MotionMagicConfigs();
         if(down){
-            configs.MotionMagicCruiseVelocity = 60;
-            configs.MotionMagicAcceleration = 120;
-            configs.MotionMagicJerk = 10000;
+            configs.MotionMagicCruiseVelocity = 15;
+            configs.MotionMagicAcceleration = 30;
+            configs.MotionMagicJerk = 5000;
         }else{
             configs.MotionMagicCruiseVelocity = 300;
             configs.MotionMagicAcceleration = 450;

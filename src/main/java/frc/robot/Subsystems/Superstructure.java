@@ -2,10 +2,16 @@ package frc.robot.Subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdleConfiguration;
+
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.commons.LoggedTunableNumber;
+import frc.robot.Constants.canIDConstants;
 import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
 import frc.robot.Subsystems.BeamBreak.BeamBreakIOInputsAutoLogged;
 import frc.robot.Subsystems.Dealgae.Dealgae;
@@ -39,7 +45,8 @@ public class Superstructure extends SubsystemBase {
         this.s_endeffector = new EndEffector(endEffectorIO);
         this.s_funnel = new Funnel(funnelIO);
         this.beambreak = beamBreakIO;
-        this.led = led;
+        this.led = led; 
+        
     }
 
     public enum SuperstructureStates {
@@ -58,7 +65,8 @@ public class Superstructure extends SubsystemBase {
         HOLD_CORAL,
         PROCESSOR,
         ELEVATOR_DOWN,
-        PUSLSE_INTAKE,
+        ELEVATOR_DOWN_B,
+        PULSE_INTAKE,
     }
 
     @Override
@@ -76,6 +84,7 @@ public class Superstructure extends SubsystemBase {
             case IDLE:
                 if (DriverStation.isDisabled()) {
                     led.setState(LEDStates.DISABLED);
+                 
                 } else {
                     if (s_elevator.selectedHeight == "L2"){
                         led.requestL2();
@@ -216,10 +225,27 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestElevatorDown();
                 s_endeffector.requestIdle();
                 if (s_elevator.atSetpoint()){
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.ELEVATOR_DOWN_B);
                 }
                 break;
-            case PUSLSE_INTAKE:
+            case ELEVATOR_DOWN_B:
+                if (s_elevator.selectedHeight == "L2"){
+                    led.requestL2();
+                } if (s_elevator.selectedHeight == "L3"){
+                    led.requestL3();
+                } if (s_elevator.selectedHeight == "L4"){
+                    led.requestL4();
+                } if (s_elevator.selectedHeight == "L1"){
+                    led.requestIdleLED();
+                }   
+                s_dealgae.requestIdle();
+                s_elevator.requestSlow();
+                s_endeffector.requestIdle();
+                if (s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.IDLE);
+                }
+
+            case PULSE_INTAKE:
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
                 s_funnel.requestIntake(3);
@@ -279,7 +305,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void requestPulseIntake(){
-        setState(SuperstructureStates.PUSLSE_INTAKE);
+        setState(SuperstructureStates.PULSE_INTAKE);
     }
 
     public boolean isBeamBroken(){

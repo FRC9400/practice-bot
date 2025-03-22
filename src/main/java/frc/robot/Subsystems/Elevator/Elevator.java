@@ -80,7 +80,13 @@ public class Elevator {
     }
 
     public void requestElevatorDown(){
-        elevatorSetpoint = Units.inchesToMeters(1);
+        elevatorSetpoint = Units.inchesToMeters(4);
+        elevatorIO.resetMotionMagicConfigs(false);
+        setState(ElevatorStates.SETPOINT);
+    }
+
+    public void requestSlow(){
+        elevatorSetpoint = Units.inchesToMeters(0.5);
         elevatorIO.resetMotionMagicConfigs(true);
         setState(ElevatorStates.SETPOINT);
     }
