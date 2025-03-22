@@ -26,7 +26,7 @@ public class Autos {
             swerve::getPoseRaw,
             swerve::resetPose,
             swerve::followChoreoTraj,
-            true,
+            false,
             swerve);    
         }
     public AutoFactory getFactory() {
@@ -38,7 +38,8 @@ public class Autos {
         final AutoTrajectory trajectory = routine.trajectory("MidtoG");
        
         routine.active().whileTrue(Commands.sequence(
-            new InstantCommand(() -> swerve.setGyroStartingPosition(trajectory.getInitialPose().isPresent() ? trajectory.getInitialPose().get().getRotation().getDegrees() : 0)),
+            //new InstantCommand(() -> swerve.setGyroStartingPosition(trajectory.getInitialPose().isPresent() ? trajectory.getInitialPose().get().getRotation().getDegrees() : 0)),
+            new InstantCommand(() -> swerve.setGyroStartingPosition(179.9)),
             trajectory.resetOdometry(),       
             //Commands.runOnce(() -> superstructure.setL4()),
             trajectory.cmd(),

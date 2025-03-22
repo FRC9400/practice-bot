@@ -86,7 +86,7 @@ public class Elevator {
     }
 
     public void requestSlow(){
-        elevatorSetpoint = Units.inchesToMeters(0.5);
+        elevatorSetpoint = Units.inchesToMeters(1);
         elevatorIO.resetMotionMagicConfigs(true);
         setState(ElevatorStates.SETPOINT);
     }
