@@ -30,9 +30,9 @@ public class elevatorConstants {
 
     /* Heights in Meters */
     public static final double L1 = 0;
-    public static final double L2 = Units.inchesToMeters(4.5);
-    public static final double L3 = Units.inchesToMeters(12);
+    public static final double L2 = Units.inchesToMeters(6.5);
+    public static final double L3 = Units.inchesToMeters(12.5);
     public static final double L2Algae = Units.inchesToMeters(12.46);
     public static final double L3Algae = Units.inchesToMeters(19.7);
-    public static final double L4 = Units.inchesToMeters(24.5);
+    public static final double L4 = 0.655;//couldn't be bothered to convert back to inches lmao
 }

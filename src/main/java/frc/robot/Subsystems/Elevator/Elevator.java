@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
 import frc.commons.Conversions;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.elevatorConstants;
 
 public class Elevator {
@@ -12,6 +13,9 @@ public class Elevator {
     private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     public String selectedHeight = "L1";
     private double elevatorSetpoint = 0; 
+
+    LoggedTunableNumber L3Height = new LoggedTunableNumber("Elevator/L3", Units.inchesToMeters(12.5));
+    LoggedTunableNumber L2Height = new LoggedTunableNumber("Elevator/L2", Units.inchesToMeters(6.5));
 
     public enum ElevatorStates{
         IDLE,
@@ -51,10 +55,10 @@ public class Elevator {
             elevatorSetpoint = elevatorConstants.L1;
         }
         else if (selectedHeight == "L2"){
-            elevatorSetpoint = elevatorConstants.L2;
+            elevatorSetpoint = L2Height.get();//elevatorConstants.L2;
         }
         else if (selectedHeight == "L3"){
-            elevatorSetpoint = elevatorConstants.L3;
+            elevatorSetpoint = L3Height.get();//elevatorConstants.L3;
         }
         else if (selectedHeight == "L4"){
             elevatorSetpoint = elevatorConstants.L4;

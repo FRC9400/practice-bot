@@ -105,7 +105,7 @@ public class Superstructure extends SubsystemBase {
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
-                s_funnel.requestIntake(2.5);
+                s_funnel.requestIntake(2);
                 s_endeffector.requestIntake(4.5);
                 if (isBeamBroken()){
                     setState(SuperstructureStates.INTAKE_B);
@@ -115,8 +115,8 @@ public class Superstructure extends SubsystemBase {
                 led.requestFunnelIntakingLED();
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
-                s_funnel.requestIntake(1);
-                s_endeffector.requestIntake(1);
+                s_funnel.requestIntake(0.75);
+                s_endeffector.requestIntake(2);
                 if (!isBeamBroken()){
                     setState(SuperstructureStates.INTAKE_C);
                 }
@@ -126,7 +126,7 @@ public class Superstructure extends SubsystemBase {
                 s_dealgae.requestIdle();
                 s_elevator.requestIdle();
                 s_funnel.requestIdle();
-                s_endeffector.requestIntake(-1);
+                s_endeffector.requestIntake(-1.25);
                 if (isBeamBroken()){
                     setState(SuperstructureStates.POST_INTAKE);
                 }
