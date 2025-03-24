@@ -25,7 +25,9 @@ public class FeedDriveAssist  extends Command{
 
     @Override
     public void initialize(){
-        headingGoal = new Rotation2d(swerve.getFeed() ? -0.950546223291815 : 0.9097530329624376);
+        
+        headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? (new Rotation2d(swerve.getFeed() ? -0.950546223291815 : 0.9097530329624376)) : new Rotation2d(swerve.getFeed() ? Math.PI - 0.9097530329624376 : Math.PI + 0.950546223291815 );
+
     }
 
     @Override

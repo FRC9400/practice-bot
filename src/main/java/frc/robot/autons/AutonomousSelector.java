@@ -12,6 +12,7 @@ public class AutonomousSelector {
             PRELOAD_DEALGAE_MID,
             PRELOAD_MID,
             PRELOAD_CAGE,
+            PRELOAD_PROCESSOR,
             LEAVE
         };
     
@@ -21,6 +22,7 @@ public class AutonomousSelector {
         autonomousSelector.addOption("Preload from Mid", modes.PRELOAD_MID);
         autonomousSelector.addOption("Preload from Cage", modes.PRELOAD_CAGE);
         autonomousSelector.addOption("Leave", modes.LEAVE);
+        autonomousSelector.addOption("Preload from Processor", modes.PRELOAD_PROCESSOR);
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 

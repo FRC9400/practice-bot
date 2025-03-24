@@ -45,7 +45,7 @@ public class Swerve extends SubsystemBase{
     private final PIDController yController = new PIDController(4.205,0,0.015);
     private final PIDController thetaController = new PIDController(3.57,0,0.005);
 
-    private boolean feedLeft;
+    private boolean feedLeft = false;
     private final GyroIO gyroIO = new GyroIOPigeon2(canIDConstants.pigeon);
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
@@ -114,7 +114,7 @@ public class Swerve extends SubsystemBase{
             moduleIOs[i].setTurnBrakeMode(false);
         }
         this.fieldRelatve = true;
-
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
       }
 
@@ -191,7 +191,7 @@ public class Swerve extends SubsystemBase{
     }
 
     public void setFeed(boolean feedLeft){
-        feedLeft = feedLeft;
+        this.feedLeft = feedLeft;
     }
 
     public boolean getFeed(){

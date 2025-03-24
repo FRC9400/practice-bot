@@ -34,7 +34,7 @@ public class halfSpeed  extends Command{
 
         dx = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? x * -1 : x;
         dy =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? y * -1: y;
-        dtheta =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? theta * -1: theta;
+        dtheta =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? theta: theta * -1;
 
         swerve.requestDesiredState(dx * 4.72/3, dy * 4.72/3, dtheta * 4, true, false);
 

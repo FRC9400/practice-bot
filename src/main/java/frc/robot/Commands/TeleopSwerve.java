@@ -37,7 +37,7 @@ public class TeleopSwerve extends Command {
         double rotationVal = Math.pow(MathUtil.applyDeadband(rotationSup.getAsDouble(), 0.05), 1) ; 
          translationVal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? translationVal : translationVal * -1;
         strafeVal =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? strafeVal : strafeVal * -1;
-        rotationVal=  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? rotationVal * -1 : rotationVal ;
+        rotationVal=  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? rotationVal  : rotationVal ;
 
 
         double x_speed = translationVal * swerveConstants.moduleConstants.maxSpeedMeterPerSecond;
