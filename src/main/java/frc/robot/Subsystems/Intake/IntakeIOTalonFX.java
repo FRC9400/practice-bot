@@ -89,6 +89,7 @@ public class IntakeIOTalonFX implements IntakeIO {
 
         /* Motor Output Configuration */
         rollerConfigs.MotorOutput.Inverted = intakeConstants.rollerInvert;
+        pivotMotor.setPosition(0);
 
         rollerMotor.getConfigurator().apply(rollerConfigs);
         
@@ -199,7 +200,6 @@ public class IntakeIOTalonFX implements IntakeIO {
         pivotConfigs.MotionMagic.MotionMagicAcceleration = kMotionAcceleration.get();
         pivotConfigs.MotionMagic.MotionMagicJerk = kMotionJerk.get();
 
-        pivotMotor.setPosition(0);
 
         pivotMotor.getConfigurator().apply(pivotConfigs);
     }

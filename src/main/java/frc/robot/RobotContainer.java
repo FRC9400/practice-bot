@@ -25,13 +25,15 @@ import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.Swerve.FeedDriveAssist;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.halfSpeed;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
     public static final CommandXboxController driver = new CommandXboxController(0);
     public static final CommandXboxController operator = new CommandXboxController(1);
     
-    
+        LoggedTunableNumber setpoint = new LoggedTunableNumber("Pivot/SETPOINT", 0);
+
     private final DealgaeIO s_dealgae = new DealgaeIOTalonFX();
     private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
     private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
@@ -61,7 +63,9 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driver.b().onTrue(intake.runSysIdCmd());
+        driver.b().onTrue(new InstantCommand(() -> intake.requestMotionMagic(setpoint.get())));
+
+        driver.y().onTrue(intake.runSysIdCmd());
 
         driver.start()
             .onTrue(new InstantCommand(() -> superstructure.requestIdle()));
