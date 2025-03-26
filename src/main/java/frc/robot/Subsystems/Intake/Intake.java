@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase{
                 this.runOnce(() -> SignalLogger.start()),
                 pivotSysID
                         .quasistatic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.pivotPositionDeg) > 80),
+                        .until(() -> Math.abs(inputs.pivotPositionDeg) > 110),
                 this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
                 pivotSysID

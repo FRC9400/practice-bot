@@ -6,7 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class intakeConstants {
     /* Inverts */
     public static final InvertedValue pivotInvert = InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue rollerInvert = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue rollerInvert = InvertedValue.CounterClockwise_Positive;
 
     /* Current Limits */
     public static final double pivotCurrentLimit = 70;
@@ -16,6 +16,6 @@ public class intakeConstants {
     public static final NeutralModeValue pivotNeutralMode = NeutralModeValue.Brake;
 
     /* Gear Ratios */
-    public static final double pivotGearRatio = 1;
+    public static final double pivotGearRatio = 33.523;
 
 }
