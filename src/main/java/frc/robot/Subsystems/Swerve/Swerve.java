@@ -26,6 +26,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,8 +61,6 @@ public class Swerve extends SubsystemBase{
     private final boolean fieldRelatve;
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(kinematicsConstants.FL, kinematicsConstants.FR, kinematicsConstants.BL,
         kinematicsConstants.BR);
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getRotation2d(),
-        getSwerveModulePositions()); 
     SwerveModuleState setpointModuleStates[] = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
             0,
             0,
@@ -69,6 +68,7 @@ public class Swerve extends SubsystemBase{
             new Rotation2d()));
 
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
+    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, heading, currentModulePositions, new Pose2d());//add actual std devs later
 
 
     private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
