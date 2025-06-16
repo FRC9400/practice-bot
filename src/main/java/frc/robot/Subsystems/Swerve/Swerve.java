@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.commons.LoggedTunableNumber;
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
@@ -68,8 +70,8 @@ public class Swerve extends SubsystemBase{
             new Rotation2d()));
 
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
-    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, heading, currentModulePositions, new Pose2d());//add actual std devs later
-
+    SwerveDrivePoseEstimator poseEstimator;//add actual std devs later
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getRotation2d(), getSwerveModulePositions());
 
     private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
         null, 
@@ -116,6 +118,7 @@ public class Swerve extends SubsystemBase{
         this.fieldRelatve = true;
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
+        poseEstimator = new SwerveDrivePoseEstimator(kinematics, lastGyroYaw, getSwerveModulePositions(), poseRaw);
       }
 
 
@@ -132,7 +135,8 @@ public class Swerve extends SubsystemBase{
         logModuleStates("SwerveModuleStates/setpointStates", getSetpointStates());
         //logModuleStates("SwerveModuleStates/optimizedSetpointStates", getOptimizedSetPointStates());
         logModuleStates("SwerveModuleStates/MeasuredStates", getMeasuredStates());
-        Logger.recordOutput("Odometry/PoseRaw", poseRaw);
+        Logger.recordOutput("Odometry/EstimatedPose", poseRaw);
+        Logger.recordOutput("Odometry/PoseRaw", odometry.getPoseMeters());
         Logger.recordOutput("FeedLeft", feedLeft);
 
     }
@@ -205,19 +209,26 @@ public class Swerve extends SubsystemBase{
     public void updateOdometry(){
         var gyroYaw = new Rotation2d(gyroInputs.positionRad);
         lastGyroYaw = gyroYaw;
-        poseRaw = odometry.update(
-                getRotation2d(),
-                getSwerveModulePositions());
+        poseEstimator.update(lastGyroYaw, getSwerveModulePositions());
+        LimelightHelpers.SetRobotOrientation("limelight", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if(mt2.tagCount!=0){
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 999999));
+            poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        }
+        poseRaw = poseEstimator.getEstimatedPosition();
+        odometry.update(getRotation2d(), getSwerveModulePositions());
     }
 
     public Pose2d getPoseRaw(){
-        return odometry.getPoseMeters();
+        return poseEstimator.getEstimatedPosition();
     }
 
     public void resetPose(Pose2d pose){
         setGyroStartingPosition(pose.getRotation().getDegrees());
-        odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
+        poseEstimator.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
         poseRaw = pose;
+        odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
@@ -345,10 +356,10 @@ public class Swerve extends SubsystemBase{
 
     public void followChoreoTraj(SwerveSample sample) {
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(
-            sample.vx + xController.calculate(odometry.getPoseMeters().getX(), sample.x),
-            sample.vy + yController.calculate(odometry.getPoseMeters().getY(), sample.y),
-            sample.omega + thetaController.calculate(odometry.getPoseMeters().getRotation().getRadians(), sample.heading)
-        ), odometry.getPoseMeters().getRotation()
+            sample.vx + xController.calculate(poseEstimator.getEstimatedPosition().getX(), sample.x),
+            sample.vy + yController.calculate(poseEstimator.getEstimatedPosition().getY(), sample.y),
+            sample.omega + thetaController.calculate(poseEstimator.getEstimatedPosition().getRotation().getRadians(), sample.heading)
+        ), poseEstimator.getEstimatedPosition().getRotation()
         );
         driveRobotRelative(speeds);
     }
