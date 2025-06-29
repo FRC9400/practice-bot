@@ -110,7 +110,7 @@ public class Autos {
     public Command Leave(){
         final AutoRoutine routine = autoFactory.newRoutine("Leave");
         final AutoTrajectory trajectory = routine.trajectory("MidtoG");
-        routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry(), trajectory.cmd(), Commands.runOnce(() -> superstructure.setL4())));
+        routine.active().whileTrue(Commands.sequence(trajectory.resetOdometry()/*, trajectory.cmd(), Commands.runOnce(() -> superstructure.setL4())*/));
         return routine.cmd();
     }
 

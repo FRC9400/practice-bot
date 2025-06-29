@@ -210,12 +210,21 @@ public class Swerve extends SubsystemBase{
         var gyroYaw = new Rotation2d(gyroInputs.positionRad);
         lastGyroYaw = gyroYaw;
         poseEstimator.update(lastGyroYaw, getSwerveModulePositions());
-        LimelightHelpers.SetRobotOrientation("limelight", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        LimelightHelpers.SetRobotOrientation("limelight-shrek", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-shrek");
         if(mt2.tagCount!=0){
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 999999));
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 10));
             poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
         }
+
+        LimelightHelpers.SetRobotOrientation("limelight", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        if(mt1.tagCount!=0){
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 10));
+            poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
+        }
+
         poseRaw = poseEstimator.getEstimatedPosition();
         odometry.update(getRotation2d(), getSwerveModulePositions());
     }
