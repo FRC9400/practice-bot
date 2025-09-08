@@ -18,25 +18,11 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.autons.AutonomousSelector;
-import frc.robot.autons.Autos;
-import frc.robot.autons.AutonomousSelector.modes;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
-  private Autos autos;
-  
-  Command doNothing;
-  Command preloadMid;
-  Command preloadDealgae;
-  Command preloadCage;
-  Command preloadProcessor;
-  Command leave;
-
-  private AutonomousSelector selector;
 
   private boolean built = false;
 
@@ -62,8 +48,6 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
                     // be added.*/
     m_robotContainer = new RobotContainer();
-    selector = new AutonomousSelector(m_robotContainer.getSwerve(), autos);
-    autos = new Autos(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
   }
 
   @Override
@@ -78,12 +62,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
-      doNothing = autos.none();
-      preloadMid = autos.PreloadMid();
-      preloadCage = autos.PreloadCage();
-      preloadDealgae = autos.PreloadandDealgaeMid();
-      preloadProcessor = autos.ProcessorToE();
-      leave = autos.Leave();
       built = true;
     }
 
@@ -96,30 +74,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-
-    if(selector.get() == modes.DO_NOTHING){
-      m_autonomousCommand = doNothing;
-    }
-
-    if(selector.get() == modes.PRELOAD_MID){
-      m_autonomousCommand = preloadMid;
-    }
-
-    if(selector.get() == modes.PRELOAD_CAGE){
-      m_autonomousCommand = preloadCage;
-    }
-
-    if(selector.get() == modes.PRELOAD_DEALGAE_MID){
-      m_autonomousCommand = preloadDealgae;
-    }
-
-    if(selector.get() == modes.LEAVE){
-      m_autonomousCommand = leave;
-    }
-
-    if(selector.get() == modes.PRELOAD_PROCESSOR){
-      m_autonomousCommand = preloadProcessor;
-    }
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

@@ -16,22 +16,11 @@ public class canIDConstants {
     /* End Effector */
     public static final int endEffectorMotor = 13;
 
-    /* Funnel */
-    public static final int funnelMotor = 14;
-
-    /* Dealgae */
-    public static final int dealgaeMotor = 15;
-
     /* Elevator */
-    public static final int leftElevatorMotor = 16;
-    public static final int rightElevatorMotor = 17;
+    public static final int leftElevatorMotor = 14;
+    public static final int rightElevatorMotor = 15;
 
     /* Intake */
-    public static final int pivotMotor = 18;
-    public static final int rollerMotor = 19;
-
-
-    /* LEDs */
-    public static final int CANdle = 20;
+    public static final int intakeMotor = 16;
 
 }

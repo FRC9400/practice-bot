@@ -1,10 +1,7 @@
 package frc.robot.Subsystems.Elevator;
 
-import java.util.Queue;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -167,18 +164,5 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     public void zeroSensor(double newValue){
         leftMotor.setPosition(newValue);
     }
-
-    public void resetMotionMagicConfigs(boolean down){
-        MotionMagicConfigs configs  = new MotionMagicConfigs();
-        if(down){
-            configs.MotionMagicCruiseVelocity = 15;
-            configs.MotionMagicAcceleration = 30;
-            configs.MotionMagicJerk = 5000;
-        }else{
-            configs.MotionMagicCruiseVelocity = 300;
-            configs.MotionMagicAcceleration = 450;
-           configs.MotionMagicJerk = 10000;
-        }
-        leftMotor.getConfigurator().apply(configs);
-    }
+   
 }

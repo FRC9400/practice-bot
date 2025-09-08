@@ -1,77 +1,52 @@
 package frc.robot.Subsystems.Intake;
 
-import com.ctre.phoenix6.SignalLogger;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
-public class Intake extends SubsystemBase{
+public class Intake {
     private final IntakeIO intakeIO;
     private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-    private final SysIdRoutine pivotSysID;
+    private IntakeStates intakeState = IntakeStates.IDLE;
+    private double voltageSetpoint = 0;
+
+    public enum IntakeStates{
+        IDLE,
+        INTAKE
+    }
 
     public Intake(IntakeIO intakeIO){
         this.intakeIO = intakeIO;
-        pivotSysID = new SysIdRoutine(
-                new SysIdRoutine.Config(null, Volts.of(3), null,
-                        (state) -> SignalLogger.writeString("state", state.toString())),
-                new SysIdRoutine.Mechanism((volts) -> intakeIO.requestPivotVoltage(volts.in(Volts)), null,
-                        this));
     }
 
-    public Command runSysIdCmd() {
-        return Commands.sequence(
-                this.runOnce(() -> SignalLogger.start()),
-                pivotSysID
-                        .quasistatic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.pivotPositionDeg) > 100),
-                this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
-                pivotSysID
-                        .quasistatic(Direction.kReverse)
-                        .until(() -> inputs.pivotPositionDeg < 5),
-                this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
-
-                pivotSysID
-                        .dynamic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.pivotPositionDeg) > 100),
-                this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
-
-                pivotSysID
-                        .dynamic(Direction.kReverse)
-                        .until(() -> inputs.pivotPositionDeg < 5),
-                this.runOnce(() -> intakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
-                this.runOnce(() -> SignalLogger.stop()));
-    }
-
-    public void requestMotionMagic(double degrees){
-        intakeIO.requestMotionMagic(degrees);
-    }
-
-    public void requestPivotVoltage(double volts){
-        intakeIO.requestPivotVoltage(volts);
-    }
-
-    public void requestRollerVoltage(double volts){
-        intakeIO.requestRollerVoltage(volts);
-    }
-
-    @Override
-    public void periodic(){
-        intakeIO.updateTunableNumbers();
+    public void Loop(){
         intakeIO.updateInputs(inputs);
         Logger.processInputs("Intake", inputs);
+        Logger.recordOutput("Intake", this.intakeState);
+        switch(intakeState){
+            case IDLE:
+                intakeIO.requestVoltage(0);
+                break;
+            case INTAKE:
+                intakeIO.requestVoltage(voltageSetpoint);
+                break;
+            default:
+                break;
+        }
     }
 
+    public void requestIdle(){
+        setState(IntakeStates.IDLE);
+    }
 
+    public void requestIntake(double volts){
+        voltageSetpoint = volts;
+        setState(IntakeStates.INTAKE);
+    }
+
+    public double getIntakeCurrent(){
+        return inputs.currentAmps;
+    }
+
+    public void setState(IntakeStates nextState){
+        this.intakeState = nextState;
+    }
 }

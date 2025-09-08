@@ -25,5 +25,4 @@ public interface ElevatorIO {
 
     public default void zeroSensor(double newValue){} 
     
-    public default void resetMotionMagicConfigs(boolean down){}
 }
