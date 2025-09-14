@@ -3,6 +3,7 @@ package frc.robot.Subsystems;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIOInputsAutoLogged;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.EndEffector.EndEffector;
