@@ -2,6 +2,7 @@ package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.EndEffector.EndEffector;
@@ -15,14 +16,18 @@ public class Superstructure extends SubsystemBase {
     private Elevator s_elevator;
     private EndEffector s_endeffector;
     private Intake s_intake;
+    private BeamBreakIO beambreak;
+    private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
+
 
     private double stateStartTime = 0;
     private SuperstructureStates systemState = SuperstructureStates.IDLE;
 
-    public Superstructure(ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, IntakeIO intakeIO){
+    public Superstructure(ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, IntakeIO intakeIO, BeamBreakIO beamBreakIO){
         this.s_elevator = new Elevator(elevatorIO);
         this.s_endeffector = new EndEffector(endEffectorIO);
         this.s_intake = new Intake(intakeIO);
+        this.beambreak = beamBreakIO;
     }
 
     public enum SuperstructureStates{
@@ -35,6 +40,8 @@ public class Superstructure extends SubsystemBase {
         s_elevator.Loop();
         s_endeffector.Loop();
         s_intake.Loop();
+        beambreak.updateInputs(beamBreakInputs);
+        Logger.processInputs("BeamBreak", beamBreakInputs);
         Logger.recordOutput("SuperstructureState", this.systemState);
         Logger.recordOutput("State start time", stateStartTime);
         switch(systemState){
@@ -50,6 +57,10 @@ public class Superstructure extends SubsystemBase {
 
     public void requestIdle(){
         setState(SuperstructureStates.IDLE);
+    }
+
+    public boolean isBeamBroken(){
+        return beamBreakInputs.beamBroken;
     }
 
      public void setState(SuperstructureStates nextState){
