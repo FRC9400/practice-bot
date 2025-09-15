@@ -22,6 +22,7 @@ public class Superstructure extends SubsystemBase {
 
 
     private double stateStartTime = 0;
+    private String elevatorSetpoint = "L1";
     private SuperstructureStates systemState = SuperstructureStates.IDLE;
 
     public Superstructure(ElevatorIO elevatorIO, EndEffectorIO endEffectorIO, IntakeIO intakeIO, BeamBreakIO beamBreakIO){
@@ -33,7 +34,11 @@ public class Superstructure extends SubsystemBase {
 
     public enum SuperstructureStates{
         //To-do
-        IDLE
+        IDLE,
+        INTAKE,
+        SCORE_A,
+        SCORE_B,
+        ELEVATOR_DOWN
     }
 
     @Override
@@ -51,6 +56,46 @@ public class Superstructure extends SubsystemBase {
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
                 break;
+            case INTAKE:
+                s_elevator.requestL1();
+                s_intake.requestIntake(3);
+                s_endeffector.requestIntake(4);
+                if (isBeamBroken()){
+                    setState(SuperstructureStates.IDLE);
+                }
+                break;
+            case SCORE_A:
+                if (elevatorSetpoint == "L1"){
+                    s_elevator.requestL1();
+                } else if (elevatorSetpoint == "L2"){
+                    s_elevator.requestL2();
+                } else if (elevatorSetpoint == "L3"){
+                    s_elevator.requestL3();
+                } else if (elevatorSetpoint == "L4"){
+                    s_elevator.requestL4();
+                }
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+                if (s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE_B);
+                }
+                break;
+            case SCORE_B:
+                s_elevator.requestHold();
+                s_endeffector.requestScore(4);
+                s_intake.requestIdle();
+                if (!isBeamBroken()){
+                    setState(SuperstructureStates.ELEVATOR_DOWN);
+                }
+                break;
+            case ELEVATOR_DOWN:
+                s_elevator.requestL1();
+                s_endeffector.requestIdle();
+                s_intake.requestIdle();
+                if (s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.IDLE);
+                }
+                break;
             default:
                 break;
         }
@@ -58,6 +103,35 @@ public class Superstructure extends SubsystemBase {
 
     public void requestIdle(){
         setState(SuperstructureStates.IDLE);
+    }
+
+    public void requestIntake(){
+        setState(SuperstructureStates.INTAKE);
+    }
+
+    public void requestScoreL1(){
+        elevatorSetpoint = "L1";
+        setState(SuperstructureStates.SCORE_A);
+    }
+
+    public void requestScoreL2(){
+        elevatorSetpoint = "L2";
+        setState(SuperstructureStates.SCORE_A);
+    }
+
+    public void requestScoreL3(){
+        elevatorSetpoint = "L3";
+        setState(SuperstructureStates.SCORE_A);
+    }
+
+    public void requestScoreL4(){
+        elevatorSetpoint = "L4";
+        setState(SuperstructureStates.SCORE_A);
+    }
+
+    public void requestElevatorDown(){
+        elevatorSetpoint = "L1";
+        setState(SuperstructureStates.ELEVATOR_DOWN);
     }
 
     public boolean isBeamBroken(){
