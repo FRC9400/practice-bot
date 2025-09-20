@@ -141,8 +141,4 @@ public class Superstructure extends SubsystemBase {
         setState(SuperstructureStates.INTAKE);
     }
 
-    public void requestScore() {
-        setState(SuperstructureStates.SCORE);
-    }
-
 }
