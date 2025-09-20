@@ -86,7 +86,6 @@ public class Superstructure extends SubsystemBase {
 
                 if (s_elevator.atSetpoint()) {
                     setState(SuperstructureStates.SCORE);
-                    setState(SuperstructureStates.GROUND);
                 }
                 break;
 
@@ -97,7 +96,6 @@ public class Superstructure extends SubsystemBase {
 
                 if (s_elevator.atSetpoint()) {
                     setState(SuperstructureStates.SCORE);
-                    setState(SuperstructureStates.GROUND);
                 }
                 break;
 
@@ -108,7 +106,6 @@ public class Superstructure extends SubsystemBase {
 
                 if (s_elevator.atSetpoint()) {
                     setState(SuperstructureStates.SCORE);
-                    setState(SuperstructureStates.GROUND);
                 }
                 break; 
 
@@ -119,7 +116,6 @@ public class Superstructure extends SubsystemBase {
 
                 if (s_elevator.atSetpoint()) {
                     setState(SuperstructureStates.SCORE);
-                    setState(SuperstructureStates.GROUND);
                 }
                 break;
 
@@ -129,7 +125,7 @@ public class Superstructure extends SubsystemBase {
                 s_endeffector.requestScore(3);
 
                 if (!isBeamBroken()) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.GROUND);
                 }
                 break;
 
