@@ -39,10 +39,7 @@ public class Superstructure extends SubsystemBase {
         ELEVATORL2,
         ELEVATORL3,
         ELEVATORL4,
-        SCORE_L1,
-        SCORE_L2,
-        SCORE_L3,
-        SCORE_L4,
+        L1NOSCORE,
     }
 
     @Override
@@ -71,67 +68,53 @@ public class Superstructure extends SubsystemBase {
             case SCORE:
                 s_endeffector.requestScore(3);
                 s_intake.requestIdle();
-                s_elevator.requestIdle();
+                s_elevator.requestHold();
                 if (!isBeamBroken()) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.L1NOSCORE);
                 }
                 break;
             case ELEVATORL1:
                 s_elevator.requestL1();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }
+                break;
+            case L1NOSCORE:
+                s_elevator.requestL1();
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.IDLE);
+                }
                 break;
             case ELEVATORL2:
                 s_elevator.requestL2();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }
+
                 break;
             case ELEVATORL3:
                 s_elevator.requestL3();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }
                 break;
             case ELEVATORL4:
                 s_elevator.requestL4();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }   
                 break;
-            case SCORE_L1:
-                s_elevator.requestL1();
-                if (s_elevator.atSetpoint()) {
-                    s_endeffector.requestScore(3);
-                    if (!isBeamBroken()) {
-                        setState(SuperstructureStates.IDLE);
-                    }
-                }
-                break;
-            case SCORE_L2:
-                s_elevator.requestL2();
-                if (s_elevator.atSetpoint()) {
-                    s_endeffector.requestScore(3);
-                    if (!isBeamBroken()) {
-                        setState(SuperstructureStates.IDLE);
-                    }
-                }
-                break;
-            case SCORE_L3:
-                s_elevator.requestL3();
-                if (s_elevator.atSetpoint()) {
-                    s_endeffector.requestScore(3);
-                    if (!isBeamBroken()) {
-                        setState(SuperstructureStates.IDLE);
-                    }
-                }
-                break;
-            case SCORE_L4:
-                s_elevator.requestL4();
-                if (s_elevator.atSetpoint()) {
-                    s_endeffector.requestScore(3);
-                    if (!isBeamBroken()) {
-                        setState(SuperstructureStates.IDLE);
-                    }
-                }
-                break;
+            
             default:
                 break;
         }
@@ -162,19 +145,4 @@ public class Superstructure extends SubsystemBase {
         setState(SuperstructureStates.SCORE);
     }
 
-    public void requestScoreL1() {
-        setState(SuperstructureStates.SCORE_L1);
-    }
-
-    public void requestScoreL2() {
-        setState(SuperstructureStates.SCORE_L2);
-    }
-
-    public void requestScoreL3() {
-        setState(SuperstructureStates.SCORE_L3);
-    }
-
-    public void requestScoreL4() {
-        setState(SuperstructureStates.SCORE_L4);
-    }
 }
