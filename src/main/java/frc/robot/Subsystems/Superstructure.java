@@ -166,10 +166,6 @@ public class Superstructure extends SubsystemBase {
         setState(SuperstructureStates.L4);
     }
 
-    public void requestScore(){
-        setState(SuperstructureStates.SCORE);
-    }
-
      public void setState(SuperstructureStates nextState){
         systemState = nextState;
         stateStartTime = RobotController.getFPGATime() / 1E6;
