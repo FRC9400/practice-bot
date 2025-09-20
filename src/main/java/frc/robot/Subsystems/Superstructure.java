@@ -32,8 +32,17 @@ public class Superstructure extends SubsystemBase {
     }
 
     public enum SuperstructureStates{
-        //To-do
-        IDLE
+        IDLE,
+        INTAKE,
+        SCORE,
+        ELEVATORL1,
+        ELEVATORL2,
+        ELEVATORL3,
+        ELEVATORL4,
+        SCORE_L1,
+        SCORE_L2,
+        SCORE_L3,
+        SCORE_L4,
     }
 
     @Override
@@ -50,6 +59,78 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestIdle();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
+                break;
+            case INTAKE:
+                s_intake.requestIntake(3);
+                s_endeffector.requestIntake(3);
+                s_elevator.requestIdle();
+                if (isBeamBroken()) {
+                    setState(SuperstructureStates.IDLE);
+                }
+                break;
+            case SCORE:
+                s_endeffector.requestScore(3);
+                s_intake.requestIdle();
+                s_elevator.requestIdle();
+                if (!isBeamBroken()) {
+                    setState(SuperstructureStates.IDLE);
+                }
+                break;
+            case ELEVATORL1:
+                s_elevator.requestL1();
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+                break;
+            case ELEVATORL2:
+                s_elevator.requestL2();
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+                break;
+            case ELEVATORL3:
+                s_elevator.requestL3();
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+                break;
+            case ELEVATORL4:
+                s_elevator.requestL4();
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+                break;
+            case SCORE_L1:
+                s_elevator.requestL1();
+                if (s_elevator.atSetpoint()) {
+                    s_endeffector.requestScore(3);
+                    if (!isBeamBroken()) {
+                        setState(SuperstructureStates.IDLE);
+                    }
+                }
+                break;
+            case SCORE_L2:
+                s_elevator.requestL2();
+                if (s_elevator.atSetpoint()) {
+                    s_endeffector.requestScore(3);
+                    if (!isBeamBroken()) {
+                        setState(SuperstructureStates.IDLE);
+                    }
+                }
+                break;
+            case SCORE_L3:
+                s_elevator.requestL3();
+                if (s_elevator.atSetpoint()) {
+                    s_endeffector.requestScore(3);
+                    if (!isBeamBroken()) {
+                        setState(SuperstructureStates.IDLE);
+                    }
+                }
+                break;
+            case SCORE_L4:
+                s_elevator.requestL4();
+                if (s_elevator.atSetpoint()) {
+                    s_endeffector.requestScore(3);
+                    if (!isBeamBroken()) {
+                        setState(SuperstructureStates.IDLE);
+                    }
+                }
                 break;
             default:
                 break;
@@ -71,5 +152,29 @@ public class Superstructure extends SubsystemBase {
 
     public SuperstructureStates getState(){
         return systemState;
+    }
+
+    public void requestIntake() {
+        setState(SuperstructureStates.INTAKE);
+    }
+
+    public void requestScore() {
+        setState(SuperstructureStates.SCORE);
+    }
+
+    public void requestScoreL1() {
+        setState(SuperstructureStates.SCORE_L1);
+    }
+
+    public void requestScoreL2() {
+        setState(SuperstructureStates.SCORE_L2);
+    }
+
+    public void requestScoreL3() {
+        setState(SuperstructureStates.SCORE_L3);
+    }
+
+    public void requestScoreL4() {
+        setState(SuperstructureStates.SCORE_L4);
     }
 }
