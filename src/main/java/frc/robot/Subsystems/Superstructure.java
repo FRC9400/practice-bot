@@ -32,7 +32,6 @@ public class Superstructure extends SubsystemBase {
     }
 
     public enum SuperstructureStates{
-        //To-do
         IDLE,
         INTAKE,
         OUTTAKE,
@@ -107,6 +106,9 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestHold();
                 s_intake.requestIntake(4);
                 s_endeffector.requestScore(4);
+                if(RobotController.getFPGATime() * 1E6 - stateStartTime > 5 && !isBeamBroken()){
+                    requestIdle();
+                }
                 break;
             default:
                 break;
