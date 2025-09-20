@@ -35,6 +35,7 @@ public class Superstructure extends SubsystemBase {
         //To-do
         IDLE,
         INTAKE,
+        GROUND,
         L1,
         L2,
         L3,
@@ -68,7 +69,7 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
 
-            case L1:
+            case GROUND:
                 s_elevator.requestL1();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
@@ -78,13 +79,25 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
 
+            case L1:
+                s_elevator.requestL1();
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+
+                if (s_elevator.atSetpoint()) {
+                    setState(SuperstructureStates.SCORE);
+                    setState(SuperstructureStates.GROUND);
+                }
+                break;
+
             case L2:
                 s_elevator.requestL2();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
 
                 if (s_elevator.atSetpoint()) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.SCORE);
+                    setState(SuperstructureStates.GROUND);
                 }
                 break;
 
@@ -94,7 +107,8 @@ public class Superstructure extends SubsystemBase {
                 s_endeffector.requestIdle();
 
                 if (s_elevator.atSetpoint()) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.SCORE);
+                    setState(SuperstructureStates.GROUND);
                 }
                 break; 
 
@@ -104,7 +118,8 @@ public class Superstructure extends SubsystemBase {
                 s_endeffector.requestIdle();
 
                 if (s_elevator.atSetpoint()) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.SCORE);
+                    setState(SuperstructureStates.GROUND);
                 }
                 break;
 
@@ -133,6 +148,10 @@ public class Superstructure extends SubsystemBase {
 
     public void requestIntake(){
         setState(SuperstructureStates.INTAKE);      
+    }
+
+    public void requestGround(){
+        setState(SuperstructureStates.GROUND); 
     }
 
     public void requestL1(){
