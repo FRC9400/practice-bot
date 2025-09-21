@@ -39,7 +39,8 @@ public class Superstructure extends SubsystemBase {
         L2,
         L3,
         L4,
-        SCORE
+        SCORE,
+        LOWER
     }
 
     @Override
@@ -74,39 +75,47 @@ public class Superstructure extends SubsystemBase {
                 s_elevator.requestL1();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
-                // if(s_elevator.atSetpoint()){
-                //     setState(SuperstructureStates.SCORE);
-                // }
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }
                 break;
             case L2:
                 s_elevator.requestL2();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
-                // if(s_elevator.atSetpoint()){
-                //     setState(SuperstructureStates.SCORE);
-                // }
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }
                 break;
             case L3:
                 s_elevator.requestL3();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
-                // if(s_elevator.atSetpoint()){
-                //     setState(SuperstructureStates.SCORE);
-                // }
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }
                 break;
             case L4:
                 s_elevator.requestL4();
                 s_intake.requestIdle();
                 s_endeffector.requestIdle();
-                // if(s_elevator.atSetpoint()){
-                //     setState(SuperstructureStates.SCORE);
-                // }
+                if(s_elevator.atSetpoint()){
+                    setState(SuperstructureStates.SCORE);
+                }
                 break;
             case SCORE:
                 s_elevator.requestHold();
                 s_intake.requestIntake(4);
                 s_endeffector.requestScore(4);
                 if(RobotController.getFPGATime() * 1E6 - stateStartTime > 5 && !isBeamBroken()){
+                    requestLower();
+                }
+                break;
+            case LOWER:
+                s_elevator.requestL1();
+                s_intake.requestIdle();
+                s_endeffector.requestIdle();
+                if(s_elevator.atSetpoint()){
                     requestIdle();
                 }
                 break;
@@ -143,8 +152,12 @@ public class Superstructure extends SubsystemBase {
         setState(SuperstructureStates.L4);
     }
 
-    public void requestScore(){
-        setState(SuperstructureStates.SCORE);
+    // public void requestScore(){
+    //     setState(SuperstructureStates.SCORE);
+    // }
+
+    public void requestLower(){
+        setState(SuperstructureStates.LOWER);
     }
 
     public boolean isBeamBroken(){
