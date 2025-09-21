@@ -7,11 +7,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIOAdafruit;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
 import frc.robot.Subsystems.EndEffector.EndEffectorIO;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake;
+import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.commons.LoggedTunableNumber;
@@ -22,6 +26,14 @@ public class RobotContainer {
     public static final CommandXboxController operator = new CommandXboxController(1);
     
     private final Swerve swerve = new Swerve();
+
+    private final BeamBreakIO s_beambreak = new BeamBreakIOAdafruit(0, false);
+    private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
+    private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
+    private final IntakeIO s_intake = new IntakeIOTalonFX();
+
+    private final Superstructure superstructure =
+        new Superstructure(s_elevator, s_endeffector, s_intake, s_beambreak);
   
     public RobotContainer() {
     swerve.zeroGyro();
@@ -36,11 +48,28 @@ public class RobotContainer {
         )
    
     );
-    configureBindings();
-
+    configureBindings();      
+        
     }
 
     private void configureBindings() {
+        driver.leftBumper()
+            .onTrue(new InstantCommand(()-> superstructure.requestIdle()));
+
+        driver.rightBumper()
+            .onTrue(new InstantCommand(()-> superstructure.requestIntake()));
+
+        driver.x()
+            .onTrue(new InstantCommand(()-> superstructure.requestL1()));
+
+        driver.y()
+            .onTrue(new InstantCommand(()-> superstructure.requestL2()));
+
+        driver.a()
+            .onTrue(new InstantCommand(()-> superstructure.requestL3()));
+
+        driver.b()
+            .onTrue(new InstantCommand(()-> superstructure.requestL4()));
     }
 
     public Swerve getSwerve(){
