@@ -124,6 +124,25 @@ public class Superstructure extends SubsystemBase {
         setState(SuperstructureStates.IDLE);
     }
 
+    public void requestL1(){
+        setState(SuperstructureStates.ELEVATORL1);
+    }
+    public void requestL2(){
+        setState(SuperstructureStates.ELEVATORL2);
+    }
+    public void requestL3(){
+        setState(SuperstructureStates.ELEVATORL3);
+    }
+    public void requestL4(){
+        setState(SuperstructureStates.ELEVATORL4);
+    }
+    public void requestL1NoScore(){
+        setState(SuperstructureStates.L1NOSCORE);
+    }
+    public void requestScore(){
+        setState(SuperstructureStates.SCORE);
+    }
+
     public boolean isBeamBroken(){
         return beamBreakInputs.beamBroken;
     }

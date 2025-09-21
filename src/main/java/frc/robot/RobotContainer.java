@@ -13,6 +13,10 @@ import frc.robot.Subsystems.EndEffector.EndEffectorIO;
 import frc.robot.Subsystems.EndEffector.EndEffectorIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
+import frc.robot.Subsystems.Intake.IntakeIO;
+import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIO;
+import frc.robot.Subsystems.BeamBreak.BeamBreakIOAdafruit;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
@@ -22,7 +26,14 @@ public class RobotContainer {
     public static final CommandXboxController operator = new CommandXboxController(1);
     
     private final Swerve swerve = new Swerve();
+
+    private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
+    private final BeamBreakIO s_beambreak = new BeamBreakIOAdafruit(1, true); 
+    private final IntakeIO s_intake = new IntakeIOTalonFX();
+    private final EndEffectorIO s_endeffector = new EndEffectorIOTalonFX();
   
+    private final Superstructure superstructure = new Superstructure(s_elevator, s_endeffector, s_intake, s_beambreak);
+
     public RobotContainer() {
     swerve.zeroGyro();
     swerve.zeroWheels();
@@ -41,6 +52,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        
+
     }
 
     public Swerve getSwerve(){
