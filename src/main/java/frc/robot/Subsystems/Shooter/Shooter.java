@@ -49,7 +49,7 @@ public class Shooter {
         this.shooterStates = nxt;
     }
 
-    public boolean atSetPoint(){
+    public boolean atSetpoint(){
         return Math.abs(inputs.shooterVelMPS[0]-setpointVelocity)<0.5; //check if wheel at right speed
     }
 
@@ -74,6 +74,10 @@ public class Shooter {
     public void requestMMVelocity(double vel){
         setpointVelocity = vel;
         setState(ShooterStates.MM_VELOCITY);
+    }
+
+    public ShooterStates getShooterState(){
+        return this.shooterState;
     }
 
 }

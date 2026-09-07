@@ -7,7 +7,7 @@ public interface ShooterIO {
     public static class ShooterIOInputs{
         public double appliedVolts = 0.0; //voltage reaching motor rn
         public double shooterSetpointMPS = 0.0; //target in meters per second
-        public double velocitySetpointRPS; //target vel
+        public double velocitySetpointRPS = 0.0; //target vel
         public double[] shooterVelMPS = new double[] {0.0}; //surface speed of each wheel
         public double[] shooterVelRPS = new double[] {0.0}; //same thing but rps
         public double[] currentAmps = new double[] {0.0}; //how hard each motor working 

@@ -23,4 +23,13 @@ public class canIDConstants {
     /* Intake */
     public static final int intakeMotor = 16;
 
+    /* Shooter */
+    public static final int shooterMotor = 17;
+
+    /* Pivot */
+    public static final int pivotMotor = 18;
+    
+    /* Beam Break — roboRIO DIO port, not a CAN ID */
+    public static final int shooterBeamBreak = 0;
+
 }

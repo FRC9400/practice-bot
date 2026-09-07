@@ -41,7 +41,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     private double leftShooterSetPointMPS;
 
-    public void ShooterIOTalonFx(){
+    public ShooterIOTalonFX(){
         leftMotorConfigs.CurrentLimits.StatorCurrentLimit= 60; //max 60a flow through
         leftMotorConfigs.CurrentLimits.StatorCurrentLimitEnable= true;//switches limit on
         leftMotorConfigs.MotorOutput.Inverted= InvertedValue.CounterClockwise_Positive;
@@ -106,7 +106,7 @@ public class ShooterIOTalonFX implements ShooterIO {
             rightShooterTemp.getValueAsDouble()
         };
         inputs.shooterVelMPS = new double[]{
-            Conversions.RPStoMPS(leftShooterSetPointMPS, shooterConstants.wheelCircumferenceMeters, 1),
+            Conversions.RPStoMPS(leftShooterSpeedRPS.getValueAsDouble(), shooterConstants.wheelCircumferenceMeters, shooterConstants.gearRatio),
             Conversions.RPStoMPS(rightShooterSpeedRPS, shooterConstants.wheelCircumferenceMeters, 1)
         };
         inputs.shooterSetpointMPS = leftShooterSetPointMPS;
