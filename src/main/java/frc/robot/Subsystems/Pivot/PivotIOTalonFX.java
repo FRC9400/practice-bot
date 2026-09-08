@@ -72,7 +72,9 @@ public class PivotIOTalonFX implements PivotIO{
         pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Conversions.DegreesToRotations(pivotConstants.maxAngleDegrees, pivotConstants.gearRatio);
         pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Conversions.DegreesToRotations(pivotConstants.minAngleDegrees, pivotConstants.gearRatio);
-
+        pivotMotor.getConfigurator().apply(pivotConfigs);
+        pivotMotor.setPosition(Conversions.DegreesToRotations(pivotConstants.stowAngleDegrees, pivotConstants.gearRatio));
+        
         BaseStatusSignal.setUpdateFrequencyForAll(50,
         pivotCurrent,
         pivotTemp,

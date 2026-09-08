@@ -51,14 +51,13 @@ public class Superstructure extends SubsystemBase {
         ZERO,
         INTAKE,
         AIM,
-        READY,
         SHOOT
     }
 
     @Override
     public void periodic(){
-        s_elevator.Loop();
-        s_endeffector.Loop();
+        s_shooter.Loop();
+        s_pivot.Loop();
         s_intake.Loop();
         beambreak.updateInputs(beamBreakInputs);
         Logger.processInputs("BeamBreak", beamBreakInputs);
@@ -86,19 +85,13 @@ public class Superstructure extends SubsystemBase {
                     setState(SuperstructureStates.AIM);
                 }
                 break;
-
             case AIM:
                 s_shooter.requestMMVelocity(shooterConstants.shootSpeedMPS);
                 s_pivot.requestAngle(pivotSetpoint);
                 s_intake.requestIdle();
-                if (s_pivot.atSetpoint()&&s_shooter.atSetpoint()){
-                    setState(SuperstructureStates.READY);
+                if (s_pivot.atSetpoint() && s_shooter.atSetpoint()){
+                    setState(SuperstructureStates.SHOOT);
                 }
-                break;
-            case READY:
-                s_shooter.requestMMVelocity(shooterConstants.shootSpeedMPS);
-                s_pivot.requestAngle(pivotSetpoint);
-                s_intake.requestIdle();
                 break;
             case SHOOT:
                 s_shooter.requestMMVelocity(shooterConstants.shootSpeedMPS);
